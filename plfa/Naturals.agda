@@ -124,3 +124,77 @@ _ =
     81
   ∎
   
+-- Monus
+
+_∸_ : ℕ → ℕ → ℕ --\.-
+m ∸ zero = m
+zero ∸ suc n = zero
+suc m ∸ suc n = m ∸ n
+
+_ =
+  begin
+    3 ∸ 2
+  ≡⟨⟩
+    2 ∸ 1
+  ≡⟨⟩
+    1 ∸ 0
+  ≡⟨⟩
+    1
+  ∎
+  
+_ =
+  begin
+    2 ∸ 3
+  ≡⟨⟩
+    1 ∸ 2
+  ≡⟨⟩
+    0 ∸ 1
+  ≡⟨⟩
+    0
+  ∎
+
+_ =
+  begin
+    5 ∸ 3
+  ≡⟨⟩
+    4 ∸ 2
+  ≡⟨⟩
+    3 ∸ 1
+  ≡⟨⟩
+    2 ∸ 0
+  ≡⟨⟩
+    2
+  ∎
+  
+_ =
+  begin
+    3 ∸ 5
+  ≡⟨⟩
+    2 ∸ 4
+  ≡⟨⟩
+    1 ∸ 3
+  ≡⟨⟩
+    0 ∸ 2
+  ≡⟨⟩
+    0
+  ∎
+
+-- Precedence
+
+infixl 6 _+_ _∸_
+infixl 7 _⋆_
+
+-- Currying
+
+-- The story of creation, revisited
+-- The story of creation, finitely
+-- Writing definitions interactively
+
+-- C-c C-c case split
+-- C-c C-, displays info about the hole
+-- C-c C-r refine
+-- C-c C-Space 
+
+_++_ : ℕ → ℕ → ℕ
+zero ++ n = n 
+suc m ++ n = suc (m + n) 
