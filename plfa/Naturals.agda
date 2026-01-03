@@ -198,3 +198,60 @@ infixl 7 _⋆_
 _++_ : ℕ → ℕ → ℕ
 zero ++ n = n 
 suc m ++ n = suc (m + n) 
+
+-- More pragmas
+
+{-# BUILTIN NATPLUS _+_ #-}
+{-# BUILTIN NATTIMES _⋆_ #-}
+{-# BUILTIN NATMINUS _∸_ #-}
+
+-- Exercise Bin (stretch)
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (x O) = x I
+inc (x I) = (inc x) O
+
+to : ℕ → Bin
+to zero = ⟨⟩
+to (suc x) = inc (to x)
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (x O) = 2 ⋆ (from x)
+from (x I) = 2 ⋆ (from x) + 1
+
+_ = begin
+  from (⟨⟩ I)
+  ≡⟨⟩ 1
+  ∎
+
+_ = begin
+  from (⟨⟩ I O)
+  ≡⟨⟩ 2
+  ∎
+  
+_ = begin
+  from (⟨⟩ I I)
+  ≡⟨⟩ 3
+  ∎
+  
+_ = begin
+  from (⟨⟩ I O O)
+  ≡⟨⟩ 4
+  ∎
+  
+_ = begin
+  to 6
+  ≡⟨⟩ ⟨⟩ I I O
+  ∎
+  
+-- Standard library
+
+-- import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+
+
