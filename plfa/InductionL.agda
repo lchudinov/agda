@@ -119,3 +119,26 @@ _ = begin
   ≡⟨⟩ 
     2 + (n + p)
   ∎
+
+-- Our second proof: commutativity
+
+-- The first lemma
+
++-identityʳ : ∀ (m : ℕ) → m + zero ≡ m -- \^r tab tab
++-identityʳ zero =
+  begin
+    zero + zero
+  ≡⟨⟩
+    zero
+  ∎
+
++-identityʳ (suc m) =
+  begin
+    suc m + zero
+  ≡⟨⟩
+    suc (m + zero)
+  ≡⟨ cong suc (+-identityʳ m) ⟩
+    suc m
+  ∎
+
+
