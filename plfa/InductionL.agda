@@ -187,4 +187,45 @@ _ = begin
 
 -- Our first corollary: rearranging
 
++-rearrange : ∀ (m n p q : ℕ) → (m + n) + (p + q) ≡ m + (n + p) + q
++-rearrange m n p q =
+  begin
+    (m + n) + (p + q)
+  ≡⟨ sym (+-assoc (m + n) p q) ⟩
+   ((m + n) + p) + q
+  ≡⟨ cong (_+ q) (+-assoc m n p) ⟩
+    (m + (n + p)) + q
+  ∎
+  
+-- Creation, one last time
 
+-- Exercise finite-+-assoc (stretch)
+
+-- In the beginning, we know nothing.
+
+-- On the first day, we know zero.
+-- 0 : ℕ
+-- (0 + 0) + 0 = 0 + (0 + 0)
+
+-- On the second day
+-- 0 : ℕ
+-- 1 : ℕ    (0 + 0) + 0 = 0 + (0 + 0)
+
+-- 0 0 1 (0 + 0) + 1 = 0 + (0 + 1)
+-- 0 1 0
+-- 0 1 1
+-- 1 0 0
+-- 1 0 1
+-- 1 1 0
+-- 1 1 1 (1 + 1) + 1 = 1 + (1 + 1)
+
+-- On the third day
+-- 0 : ℕ
+-- 1 : ℕ    (0 + 0) + 0 = 0 + (0 + 0)
+-- 2 : ℕ    (0 + 0) + 1 = 0 + (0 + 1) ... (1 + 1) + 1 = 1 + (1 + 1)
+
+
+-- Associativity with rewrite
++-assoc' : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc' zero n p = refl
++-assoc' (suc m) n p rewrite +-assoc' m n p = refl
