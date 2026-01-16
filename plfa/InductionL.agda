@@ -229,3 +229,30 @@ _ = begin
 +-assoc' : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 +-assoc' zero n p = refl
 +-assoc' (suc m) n p rewrite +-assoc' m n p = refl
+
+-- Commutativity with rewrite
+
++-identity' : ∀ (n : ℕ) → n + zero ≡ n
++-identity' zero = refl
++-identity' (suc n) rewrite +-identity' n = refl
+
++-suc' : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
++-suc' zero n = refl
++-suc' (suc m) n  rewrite +-suc' m n = refl
+
++-comm' : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm' m zero rewrite +-identity' m = refl
++-comm' m (suc n) rewrite +-suc' m n | +-comm' m n = refl
+
+-- Building proofs interactively
+
++-assoc'' : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc'' zero n p = refl
++-assoc'' (suc m) n p rewrite +-assoc'' m n p = refl
+
+-- Exercise +-swap (recommended)
+
++-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
++-swap m n p rewrite +-comm' m (n + p) | +-assoc'' n p m | +-comm' p m = refl
+
+
