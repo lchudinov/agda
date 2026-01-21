@@ -255,4 +255,9 @@ _ = begin
 +-swap : ∀ (m n p : ℕ) → m + (n + p) ≡ n + (m + p)
 +-swap m n p rewrite +-comm' m (n + p) | +-assoc'' n p m | +-comm' p m = refl
 
+-- Exercise *-distrib-+ (recommended)
+
+*-distrib-+ : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+*-distrib-+ zero n p = refl
+*-distrib-+ (suc m) n p  rewrite *-distrib-+ m n p | +-assoc p (m * p)  (n * p) = refl
 
