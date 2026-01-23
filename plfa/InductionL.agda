@@ -267,3 +267,20 @@ _ = begin
 *-assoc zero n p = refl
 *-assoc (suc m) n p rewrite *-distrib-+ n (m * n) p | *-assoc m n p = refl
 
+-- Exercise *-comm (practice)
+
+*-zero : ∀ (m : ℕ) → m * zero ≡ zero
+*-zero zero = refl
+*-zero (suc m) rewrite *-zero m = refl
+
+*-identity : ∀ (m : ℕ) → m * 1 ≡ m
+*-identity zero = refl
+*-identity (suc m) rewrite *-identity m = refl
+
+*-suc : ∀ (m n : ℕ) → m * suc n ≡ m + (m * n)
+*-suc zero n = refl
+*-suc (suc m) n rewrite *-suc m n | +-swap n m (m * n) = refl
+
+*-comm : ∀ (m n : ℕ) → m * n ≡ n * m
+*-comm m zero rewrite *-zero m = refl
+*-comm m (suc n) rewrite *-suc m n | *-comm m n = refl
