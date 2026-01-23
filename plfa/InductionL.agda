@@ -284,3 +284,10 @@ _ = begin
 *-comm : ∀ (m n : ℕ) → m * n ≡ n * m
 *-comm m zero rewrite *-zero m = refl
 *-comm m (suc n) rewrite *-suc m n | *-comm m n = refl
+
+-- Exercise 0∸n≡0 (practice)
+
+∸-zero : ∀ (n : ℕ) → zero ∸ n ≡ zero -- \.-
+∸-zero zero = refl
+∸-zero (suc n) = refl 
+
