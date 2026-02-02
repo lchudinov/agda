@@ -302,20 +302,20 @@ _ = begin
 
 -- a bad try: induction by m
 
-∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
-∸-+-assoc zero n p rewrite ∸-zero n | ∸-zero p | ∸-zero (n + p) = refl
-∸-+-assoc (suc m) n p = {!   !}
+-- ∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+-- ∸-+-assoc zero n p rewrite ∸-zero n | ∸-zero p | ∸-zero (n + p) = refl
+-- ∸-+-assoc (suc m) n p = {!   !}
 
 -- solution: induction by n then by m
-∸-+-assoc' : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
-∸-+-assoc' m zero p = refl
-∸-+-assoc' zero (suc n) p rewrite ∸-zero (suc n) | ∸-zero p = refl
-∸-+-assoc' (suc m) (suc n) p rewrite ∸-+-assoc' m n p = refl
+∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc m zero p = refl
+∸-+-assoc zero (suc n) p rewrite ∸-zero (suc n) | ∸-zero p = refl
+∸-+-assoc (suc m) (suc n) p rewrite ∸-+-assoc m n p = refl
 
 -- a bad try: induction by p
-∸-+-assoc'' : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
-∸-+-assoc'' m n zero rewrite +-comm n zero = refl
-∸-+-assoc'' m n (suc p) rewrite +-suc n p = {!   !}
+-- ∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+-- ∸-+-assoc m n zero rewrite +-comm n zero = refl
+-- ∸-+-assoc m n (suc p) rewrite +-suc n p = {!   !}
 
 --- Сделал три попытки индукции по m n или p пока ничего не дало
 
@@ -333,3 +333,8 @@ _ = begin
 -- m ∸ zero = m
 -- zero ∸ suc n = zero
 -- suc m ∸ suc n = m ∸ n
+
+-- Exercise +*^ (stretch)
+
+^-distribˡ-+-* : ∀ (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
+^-distribˡ-+-* m n p = {!   !}
