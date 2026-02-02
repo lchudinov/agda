@@ -291,3 +291,45 @@ _ = begin
 ∸-zero zero = refl
 ∸-zero (suc n) = refl 
 
+∸-identity : ∀ (n : ℕ) → n ∸ zero ≡ n -- \.-
+∸-identity zero = refl
+∸-identity (suc n) = refl 
+
+∸-suc : ∀ (m n : ℕ) → suc m ∸ suc n ≡ m ∸ n
+∸-suc m n = refl
+
+-- Exercise ∸-+-assoc (practice)
+
+-- a bad try: induction by m
+
+∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc zero n p rewrite ∸-zero n | ∸-zero p | ∸-zero (n + p) = refl
+∸-+-assoc (suc m) n p = {!   !}
+
+-- solution: induction by n then by m
+∸-+-assoc' : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc' m zero p = refl
+∸-+-assoc' zero (suc n) p rewrite ∸-zero (suc n) | ∸-zero p = refl
+∸-+-assoc' (suc m) (suc n) p rewrite ∸-+-assoc' m n p = refl
+
+-- a bad try: induction by p
+∸-+-assoc'' : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc'' m n zero rewrite +-comm n zero = refl
+∸-+-assoc'' m n (suc p) rewrite +-suc n p = {!   !}
+
+--- Сделал три попытки индукции по m n или p пока ничего не дало
+
+-- 0 - 0 - 0 = 0 - (0 + 0)
+-- 1 - 0 - 0 = 1 - (0 + 0)
+-- 1 - 1 - 0 = 1 - (1 + 0)
+-- 1 - 0 - 1 = 1 - (0 + 1)
+-- suc 1 - 1 - 1 = suc 1 - (1 + 1)
+-- suc m ∸ n ∸ p ≡ suc m ∸ (n + p)
+-- m ∸ n ∸ p ≡ m ∸ (n + p) ---- H
+-- m ∸ suc n = m ∸ (n + 1) 
+
+-- monus definition
+-- _∸_ : ℕ → ℕ → ℕ --\.-
+-- m ∸ zero = m
+-- zero ∸ suc n = zero
+-- suc m ∸ suc n = m ∸ n
