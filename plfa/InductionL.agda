@@ -337,4 +337,19 @@ _ = begin
 -- Exercise +*^ (stretch)
 
 ^-distribˡ-+-* : ∀ (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
-^-distribˡ-+-* m n p = {!   !}
+^-distribˡ-+-* m zero p rewrite +-identity' (m ^ p) = refl
+^-distribˡ-+-* m (suc n) p  rewrite ^-distribˡ-+-* m n p | *-assoc m (m ^ n) (m ^ p) = refl
+
+-- induction by m - don;t know what to do
+-- ^-distribˡ-+-*' : ∀ (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
+-- ^-distribˡ-+-*' zero n p = {!   !}
+-- ^-distribˡ-+-*' (suc m) n p = {!   !}
+
+-- definition of ^
+-- _^_ : ℕ → ℕ → ℕ
+-- m ^ zero = suc zero
+-- m ^ (suc n) = m ⋆ (m ^ n)
+
+-- *-comm : ∀ (m n : ℕ) → m * n ≡ n * m
+-- *-assoc : ∀ (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
+
