@@ -353,3 +353,8 @@ _ = begin
 -- *-comm : ∀ (m n : ℕ) → m * n ≡ n * m
 -- *-assoc : ∀ (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
 
+^-distribʳ-* : ∀ (m n p : ℕ) → (m * n) ^ p ≡ (m ^ p) * (n ^ p)
+^-distribʳ-* m n zero = refl
+^-distribʳ-* m n (suc p) rewrite ^-distribʳ-* m n p  | *-assoc m n (m ^ p * n ^ p) | *-comm n (m ^ p * n ^ p) | *-assoc m  (m ^ p)  (n * n ^ p) | *-assoc (m ^ p) (n ^ p) n | *-comm (n ^ p) n = refl
+
+
