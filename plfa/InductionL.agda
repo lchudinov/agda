@@ -355,6 +355,26 @@ _ = begin
 
 ^-distribʳ-* : ∀ (m n p : ℕ) → (m * n) ^ p ≡ (m ^ p) * (n ^ p)
 ^-distribʳ-* m n zero = refl
-^-distribʳ-* m n (suc p) rewrite ^-distribʳ-* m n p  | *-assoc m n (m ^ p * n ^ p) | *-comm n (m ^ p * n ^ p) | *-assoc m  (m ^ p)  (n * n ^ p) | *-assoc (m ^ p) (n ^ p) n | *-comm (n ^ p) n = refl
+^-distribʳ-* m n (suc p)  
+  rewrite 
+    ^-distribʳ-* m n p
+  | *-assoc m n (m ^ p * n ^ p)
+  | *-comm n (m ^ p * n ^ p)
+  | *-assoc m  (m ^ p) (n * n ^ p)
+  | *-assoc (m ^ p) (n ^ p) n
+  | *-comm (n ^ p) n
+  = refl
 
+^-*-assoc : ∀ (m n p : ℕ) → (m ^ n) ^ p ≡ m ^ (n * p)
+^-*-assoc m n zero
+  rewrite *-zero n = refl
+^-*-assoc m n (suc p)
+  rewrite
+    ^-*-assoc m n p
+  | *-suc n p
+  | ^-distribˡ-+-* m n (n * p)
+  = refl
+
+-- *-suc : ∀ (m n : ℕ) → m * suc n ≡ m + (m * n)
+-- ^-distribˡ-+-* : ∀ (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
 
