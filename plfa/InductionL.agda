@@ -378,3 +378,49 @@ _ = begin
 -- *-suc : ∀ (m n : ℕ) → m * suc n ≡ m + (m * n)
 -- ^-distribˡ-+-* : ∀ (m n p : ℕ) → m ^ (n + p) ≡ (m ^ n) * (m ^ p)
 
+-- Exercise Bin-laws (stretch)
+
+-- I copied data Bin from Naturals.agda
+
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (x O) = x I
+inc (x I) = (inc x) O
+
+to : ℕ → Bin
+to zero = ⟨⟩
+to (suc x) = inc (to x)
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (x O) = 2 * (from x)
+from (x I) = 2 * (from x) + 1
+
+from-inc : ∀ (b : Bin) → from (inc b) ≡ suc (from b)
+from-inc ⟨⟩ = refl
+from-inc (b O)
+  rewrite
+    +-identityʳ (from b)
+  | +-suc (from b + from b) zero
+  | +-identityʳ (from b + from b)
+  = refl
+from-inc (b I)
+  rewrite
+    from-inc b
+  | +-identityʳ (suc (from b))
+  | +-identityʳ (from b)
+  | +-suc (from b) (from b)
+  | +-assoc (from b) (from b) 1
+  | +-suc (from b) zero
+  | +-identityʳ (from b)
+  | +-suc (from b) (from b)
+  = refl
+
+-- +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m -- \^r tab tab
+-- +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
+-- +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
