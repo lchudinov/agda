@@ -217,7 +217,7 @@ inc (x O) = x I
 inc (x I) = (inc x) O
 
 to : ℕ → Bin
-to zero = ⟨⟩
+to zero = ⟨⟩ O
 to (suc x) = inc (to x)
 
 from : Bin → ℕ
