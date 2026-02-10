@@ -424,3 +424,38 @@ from-inc (b I)
 -- +-identityʳ : ∀ (m : ℕ) → m + zero ≡ m -- \^r tab tab
 -- +-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
 -- +-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
+
+from-to : ∀ (n : ℕ) → from (to n) ≡ n
+from-to zero = refl
+from-to (suc n)
+  rewrite
+    from-inc (to n)
+  | from-to n
+  = refl
+  
+to-from : ∀ (b : Bin) → from (to (from b)) ≡ from b
+to-from ⟨⟩ = refl
+to-from (b O)
+  rewrite
+    +-identityʳ (from b)
+  | from-to (from b + from b)
+   = refl
+to-from (b I)
+  rewrite
+    from-to (from (b I))
+  = refl
+  
+-- Standard library
+
+import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
+
+-- Unicode
+-- This chapter uses the following unicode:
+
+-- ∀  U+2200  FOR ALL (\forall, \all)
+-- ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
+-- ′  U+2032  PRIME (\')
+-- ″  U+2033  DOUBLE PRIME (\')
+-- ‴  U+2034  TRIPLE PRIME (\')
+-- ⁗  U+2057  QUADRUPLE PRIME (\')
+-- Similar to \r, the command \^r gives access to a variety of superscript rightward arrows, and also a superscript letter r. The command \' gives access to a range of primes (′ ″ ‴ ⁗).
