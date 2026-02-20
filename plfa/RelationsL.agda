@@ -57,3 +57,57 @@ infix 4 _≤_
 -- Decidability
 
 -- Inversion
+
+inv-s≤s : ∀ {m n : ℕ}
+  → suc m ≤ suc n
+    -------------
+  → m ≤ n
+inv-s≤s (s≤s m≤n) = m≤n
+
+inv-z≤s : ∀ {m : ℕ}
+  → m ≤ zero
+    --------
+  → m ≡ zero
+inv-z≤s z≤n = refl
+
+-- Properties of ordering relations
+
+-- Reflexive. For all n, n ≤ n holds.
+-- Transitive. For all m, n, and p, if m ≤ n and n ≤ p hold, then m ≤ p holds.
+-- Anti-symmetric. For all m and n, if both m ≤ n and n ≤ m hold, then m ≡ n holds.
+-- Total. For all m and n, either m ≤ n or n ≤ m holds.
+
+-- The relation _≤_ satisfies all four of these properties.
+
+-- Preorder. Any relation that is reflexive and transitive.
+-- Partial order. Any preorder that is also anti-symmetric.
+-- Total order. Any partial order that is also total.
+
+-- Exercise orderings (practice)
+
+-- Give an example of a preorder that is not a partial order.
+-- Divisibility on integers ignoring sign
+
+-- Give an example of a partial order that is not a total order.
+-- Divisibility on natural numbers
+
+-- Reflexivity
+
+≤-refl : ∀ {n : ℕ}
+    -----
+  → n ≤ n
+≤-refl {zero} = z≤n
+≤-refl {suc n} = s≤s ≤-refl
+
+-- Transitivity
+
+≤-trans : ∀ {m n p : ℕ}
+  → m ≤ n
+  → n ≤ p
+    -----
+  → m ≤ p
+≤-trans z≤n _ = z≤n
+≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
+
+-------------- Разобрать как это делать интерактивно
+
