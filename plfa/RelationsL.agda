@@ -106,8 +106,15 @@ inv-z≤s z≤n = refl
   → n ≤ p
     -----
   → m ≤ p
-≤-trans z≤n _ = z≤n
+≤-trans z≤n n≤p = z≤n
 ≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p)
 
--------------- Разобрать как это делать интерактивно
+≤-trans' : ∀ (m n p : ℕ)
+  → m ≤ n
+  → n ≤ p
+    -----
+  → m ≤ p
+≤-trans' zero n p m≤n n≤p = z≤n
+≤-trans' (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans' m n p m≤n n≤p)
+
 
