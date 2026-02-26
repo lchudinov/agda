@@ -117,4 +117,23 @@ inv-z≤s z≤n = refl
 ≤-trans' zero n p m≤n n≤p = z≤n
 ≤-trans' (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans' m n p m≤n n≤p)
 
+-- Anti-symmetry
+
+≤-antisym : ∀ {m n : ℕ}
+  → m ≤ n
+  → n ≤ m
+    -----
+  → m ≡ n
+≤-antisym z≤n z≤n = refl
+≤-antisym (s≤s m≤n) (s≤s n≤m) = cong suc (≤-antisym m≤n n≤m)
+
+-- Exercise ≤-antisym-cases (practice)
+
+≤-antisym' : ∀ (m n : ℕ)
+  → m ≤ n
+  → n ≤ m
+    -----
+  → m ≡ n
+≤-antisym' zero zero m≤n n≤m = refl
+≤-antisym' (suc m) (suc n) (s≤s m≤n) (s≤s n≤m) = cong suc (≤-antisym' m n m≤n n≤m)
 
