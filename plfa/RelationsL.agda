@@ -137,3 +137,52 @@ inv-z≤s z≤n = refl
 ≤-antisym' zero zero m≤n n≤m = refl
 ≤-antisym' (suc m) (suc n) (s≤s m≤n) (s≤s n≤m) = cong suc (≤-antisym' m n m≤n n≤m)
 
+-- Total
+
+data Total (m n : ℕ) : Set where
+  
+  forward :
+      m ≤ n
+      ---------
+    → Total m n
+    
+  flipped :
+      n ≤ m
+      ---------
+    → Total m n
+
+data Total' : ℕ → ℕ → Set where
+  
+  forward' : ∀ {m n : ℕ}
+      m ≤ n
+      ---------
+    → Total' m n
+    
+  flipped' : ∀ {m n : ℕ}
+      n ≤ m
+      ---------
+    → Total' m n
+
+≤-total : ∀ (m n : ℕ) → Total m n
+≤-total zero n = forward z≤n
+≤-total (suc m) zero = flipped z≤n
+≤-total (suc m) (suc n) with ≤-total m n
+...                        | forward m≤n = forward (s≤s m≤n)
+...                        | flipped n≤m = flipped (s≤s n≤m)
+
+≤-total' : ∀ (m n : ℕ) → Total m n
+≤-total' zero n = forward z≤n
+≤-total' (suc m) zero = flipped z≤n
+≤-total' (suc m) (suc n) = helper (≤-total m n)
+  where
+  helper : Total m n → Total (suc m) (suc n)
+  helper (forward m≤n) = forward (s≤s m≤n)
+  helper (flipped n≤m) = flipped (s≤s n≤m)
+  
+≤-total'' : ∀ (m n : ℕ) → Total m n
+≤-total'' m zero = flipped z≤n
+≤-total'' zero (suc n) = forward z≤n
+≤-total'' (suc m) (suc n) with ≤-total'' m n 
+...                          | forward m≤n = forward (s≤s m≤n)
+...                          | flipped n≤m = flipped (s≤s n≤m)
+
