@@ -259,13 +259,31 @@ data _<_ : ℕ → ℕ → Set where
 
 infix 4 _>_
 
-data _>_ : ℕ → ℕ → Set where
+_>_ : ℕ → ℕ → Set
+m > n = n < m 
+    
+data Trichotomy (m n : ℕ) : Set where
   
-  s>z : ∀ {n : ℕ}
-      ------------
-    → suc n > zero
+  less : 
+      m < n
+      ---------
+    → Trichotomy m n
   
-  s>s : ∀ {m n : ℕ}
-    → m > n
-      ------------
-    → suc m > suc n 
+  equal : 
+      m ≡ n
+      ---------
+    → Trichotomy m n
+  
+  greater : 
+      m > n
+      ---------
+    → Trichotomy m n
+
+trichotomy : (m n : ℕ) → Trichotomy m n
+trichotomy zero zero = equal refl
+trichotomy zero (suc n) = less z<s
+trichotomy (suc m) zero = greater z<s
+trichotomy (suc m) (suc n) with trichotomy m n
+...                        | less  m<n = less (s<s m<n)
+...                        | equal m≡n = equal (cong suc m≡n)
+...                        | greater m>n = greater (s<s m>n)
