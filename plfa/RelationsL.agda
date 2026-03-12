@@ -287,3 +287,44 @@ trichotomy (suc m) (suc n) with trichotomy m n
 ...                        | less  m<n = less (s<s m<n)
 ...                        | equal m≡n = equal (cong suc m≡n)
 ...                        | greater m>n = greater (s<s m>n)
+
+-- Exercise +-mono-< (practice)
+
++-monoʳ-< : ∀ (n p q : ℕ) -- \^r tab tab tab
+  → p < q
+    ------------------
+  → n + p < n + q
++-monoʳ-< zero p q p<q = p<q
++-monoʳ-< (suc n) p q p<q = s<s (+-monoʳ-< n p q p<q)
+
++-monoˡ-< : ∀ (m n p : ℕ)
+  → m < n
+    -------------
+  → m + p < n + p
++-monoˡ-< m n p m<n rewrite +-comm m p | +-comm n p = +-monoʳ-< p m n m<n 
+
++-mono-< : ∀ (m n p q : ℕ)
+  → m < n
+  → p < q
+    -------------
+  → m + p < n + q
++-mono-< m n p q m<n p<q = <-trans (+-monoˡ-< m n p m<n) (+-monoʳ-< n p q p<q)
+
+-- Exercise ≤→<, <→≤ (recommended)
+
+≤→< : ∀ (m n : ℕ)
+  → suc m ≤ n
+    ------------
+  → m < n
+≤→< zero (suc n) sm≤n = z<s
+≤→< (suc m) (suc n) (s≤s sm≤n) = s<s (≤→< m n sm≤n)
+
+
+
+<→≤ : ∀ (m n : ℕ)
+  → m < n
+    ------------
+  → suc m ≤ n
+<→≤ zero (suc n) m<n = s≤s z≤n
+<→≤ (suc m) (suc n) (s<s m<n) = s≤s (<→≤ m n m<n)
+
