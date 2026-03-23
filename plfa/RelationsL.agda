@@ -334,7 +334,8 @@ trichotomy (suc m) (suc n) with trichotomy m n
   → m < n
     ------------
   → m < suc n
-<-suc m n m<n = {!   !} -- have to prove this lemma
+<-suc zero (suc n) z<s = z<s
+<-suc (suc m) (suc n) (s<s m<n) = s<s (<-suc m n m<n)
 
 <-trans-revisited : ∀ {m n p : ℕ}
   → m < n
