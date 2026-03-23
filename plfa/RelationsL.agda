@@ -328,3 +328,18 @@ trichotomy (suc m) (suc n) with trichotomy m n
 <→≤ zero (suc n) m<n = s≤s z≤n
 <→≤ (suc m) (suc n) (s<s m<n) = s≤s (<→≤ m n m<n)
 
+-- Exercise <-trans-revisited (practice)
+
+<-suc : ∀ (m n : ℕ)
+  → m < n
+    ------------
+  → m < suc n
+<-suc m n m<n = {!   !} -- have to prove this lemma
+
+<-trans-revisited : ∀ {m n p : ℕ}
+  → m < n
+  → n < p
+  -----
+  → m < p
+<-trans-revisited {m} {n} {p} m<n n<p = ≤→< m p (≤-trans (<→≤ m n m<n) (inv-s≤s (<→≤ n (suc p) (<-suc n p n<p))))
+
