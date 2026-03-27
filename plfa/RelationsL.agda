@@ -391,3 +391,50 @@ o+o≡e : ∀ {m n : ℕ}
     ------------
   → even (m + n)
 o+o≡e om on = o+o≡e om on
+
+-- Exercise Bin-predicates (stretch)
+
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (x O) = x I
+inc (x I) = (inc x) O
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc x) = inc (to x)
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (x O) = 2 * (from x)
+from (x I) = 2 * (from x) + 1
+
+data One : Bin → Set where
+  one :
+    ----
+    One (⟨⟩ I)
+
+  one_o : ∀ {b : Bin}
+    → One b
+      -------
+    → One (b O)
+
+  one_i : ∀ {b : Bin}
+    → One b
+      -------
+    → One (b I)
+
+data Can : Bin → Set where
+  zero : 
+    -----
+    Can ⟨⟩
+  
+  one : ∀ {b : Bin}
+    → One b
+      --------
+    → Can b
+
