@@ -401,17 +401,17 @@ data Bin : Set where
 
 inc : Bin → Bin
 inc ⟨⟩ = ⟨⟩ I
-inc (x O) = x I
-inc (x I) = (inc x) O
+inc (b O) = b I
+inc (b I) = (inc b) O
 
 to : ℕ → Bin
 to zero = ⟨⟩ O
-to (suc x) = inc (to x)
+to (suc b) = inc (to b)
 
 from : Bin → ℕ
 from ⟨⟩ = zero
-from (x O) = 2 * (from x)
-from (x I) = 2 * (from x) + 1
+from (b O) = 2 * (from b)
+from (b I) = 2 * (from b) + 1
 
 data One : Bin → Set where
   one :
@@ -429,12 +429,19 @@ data One : Bin → Set where
     → One (b I)
 
 data Can : Bin → Set where
-  zero : 
+  c_zero : 
     -----
     Can ⟨⟩
   
-  one : ∀ {b : Bin}
+  c_one : ∀ {b : Bin}
     → One b
       --------
     → Can b
+    
+can_inc : ∀ {b : Bin}
+  → Can b
+    -----------
+  → Can (inc b)
+can_inc c_zero = c_one one
+can_inc (c_one b) = {!   !}
 
