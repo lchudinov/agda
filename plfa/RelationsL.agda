@@ -446,3 +446,14 @@ can_inc c_zero = c_one one
 can_inc (c_one b) = {!   !}
 
 -- I left this exercise unsolved. It looks hard to me.
+
+-- Standard library
+
+import Data.Nat using (_≤_; z≤n; s≤s; _<_)
+import Data.Nat.Properties using (≤-refl; ≤-trans; ≤-antisym; ≤-total; +-monoʳ-≤; +-monoˡ-≤; +-mono-≤)
+
+-- Unicode
+-- ≤  U+2264  LESS-THAN OR EQUAL TO (\<=, \le)
+-- ≥  U+2265  GREATER-THAN OR EQUAL TO (\>=, \ge)
+-- ˡ  U+02E1  MODIFIER LETTER SMALL L (\^l)
+-- ʳ  U+02B3  MODIFIER LETTER SMALL R (\^r)
