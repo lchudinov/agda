@@ -445,3 +445,4 @@ can_inc : ∀ {b : Bin}
 can_inc c_zero = c_one one
 can_inc (c_one b) = {!   !}
 
+-- I left this exercise unsolved. It looks hard to me.
