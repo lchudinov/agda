@@ -201,3 +201,52 @@ module ≤-Reasoning {A : Set} where
       -------------
     → m + p ≤ n + q
   +-mono-≤ m n p q m≤n p≤q = ≤-trans (+-monoˡ-≤ m n p m≤n) (+-monoʳ-≤ n p q p≤q)
+  
+
+-- Rewriting
+
+data even : ℕ → Set
+data odd : ℕ → Set
+  
+data even where 
+  
+  even-zero : even zero
+  
+  even-suc : ∀ {n : ℕ}
+    → odd n
+      ---------------
+    → even (suc n)
+
+data odd where
+  
+  odd-suc : ∀ {n : ℕ}
+    → even n
+      ---------
+    → odd (suc n)
+    
+even-comm : ∀ (m n : ℕ)
+  → even (m + n)
+    ---------------
+  → even (n + m)
+even-comm m n ev rewrite +-comm m n = ev -- C-c C-a an automated search
+
+-- Multiple rewrites
+
++-comm′ : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm′ zero n rewrite +-identity n = refl
++-comm′ (suc m) n rewrite +-suc n m | +-comm′ n m = refl
+    
+-- Rewriting expanded
+
+even-comm′ : ∀ (m n : ℕ)
+  → even (m + n)
+    ----------------
+  → even (n + m)
+even-comm′ m n ev with   m + n  | +-comm m n
+...                  | .(n + m) | refl       = ev
+
+even-comm″ : ∀ (m n : ℕ)
+  → even (m + n)
+    ------------
+  → even (n + m)
+even-comm″ m n  =  subst even (+-comm m n)
