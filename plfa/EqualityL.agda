@@ -273,3 +273,38 @@ trans-≐ : ∀ {A : Set} {x y z : A}
 -- trans-≐ x≐y y≐z P Px = y≐z P (x≐y {!   !} {!   !})
 -- trans-≐ x≐y y≐z P Px = y≐z P (x≐y P {!   !})
 trans-≐ x≐y y≐z P Px = y≐z P (x≐y P Px)
+
+sim-≐ : ∀ {A : Set} {x y : A}
+  → x ≐ y
+    -----
+  → y ≐ x
+sim-≐ {A} {x} {y} x≐y P = Qy
+  where
+    Q : A → Set
+    Q z = P z → P x
+    Qx : Q x
+    Qx = refl-≐ P
+    Qy : Q y
+    Qy = x≐y Q Qx
+
+≡-implies-≐ : ∀ {A : Set} {x y : A}
+  → x ≡ y
+    -----
+  → x ≐ y
+≡-implies-≐ x≡y P = subst P x≡y
+
+≐-implies-≡ : ∀ {A : Set} {x y : A}
+  → x ≐ y
+    -----
+  → x ≡ y
+≐-implies-≡ {A} {x} {y} x≐y = Qy
+  where
+    Q : A → Set
+    Q z = x ≡ z
+    Qx : Q x
+    Qx = refl
+    Qy : Q y
+    Qy = x≐y Q Qx
+    
+-- Universe polymorphism
+
