@@ -308,3 +308,26 @@ sim-≐ {A} {x} {y} x≐y P = Qy
     
 -- Universe polymorphism
 
+open import Level using (Level; _⊔_) renaming (zero to lzero; suc to lsuc) -- \lub
+
+data _≡′_ {ℓ : Level} {A : Set ℓ} (x : A) : A → Set ℓ where -- \ell
+  refl′ : x ≡′ x
+
+sym′ : ∀ {ℓ : Level} {A : Set ℓ} {x y : A}
+  → x ≡′ y
+    ------
+  → y ≡′ x
+sym′ refl′ = refl′
+
+_≐′_ : ∀ {ℓ : Level} {A : Set ℓ} (x y : A) → Set (lsuc ℓ)
+_≐′_ {ℓ} {A} x y = ∀ (P : A → Set ℓ) → P x → P y
+
+_∘_ : ∀ {ℓ₁ ℓ₂ ℓ₃ : Level} {A : Set ℓ₁} {B : Set ℓ₂} {C : Set ℓ₃}
+  → (B → C) → (A → B) → A → C
+(g ∘ f) x  =  g (f x)
+
+-- Standard library
+
+-- import Relation.Binary.PropositionalEquality as Eq
+-- open Eq using (_≡_; refl; trans; sym; cong; cong-app; subst)
+-- open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
