@@ -250,3 +250,17 @@ module ≲-Reasoning where
   A ≲-∎ = ≲-refl
 
 open ≲-Reasoning
+
+-- Exercise ≃-implies-≲ (practice)
+
+≃-implies-≲ : ∀ {A B : Set}
+  → A ≃ B
+    -----
+  → A ≲ B
+≃-implies-≲ A≃B = 
+  record
+    { from    = from A≃B
+    ; to      = to A≃B
+    ; from∘to = from∘to A≃B
+    }
+      
