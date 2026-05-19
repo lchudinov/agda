@@ -296,3 +296,76 @@ open _⇔_
     { to      = from A⇔B
     ; from    = to  A⇔B
     }
+    
+-- Exercise Bin-embedding (stretch)
+
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (+-assoc; +-identityʳ; +-suc; +-comm)
+
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc-bin : Bin → Bin
+inc-bin ⟨⟩ = ⟨⟩ I
+inc-bin (x O) = x I
+inc-bin (x I) = (inc-bin x) O
+
+to-bin : ℕ → Bin
+to-bin zero = ⟨⟩ O
+to-bin (suc x) = inc-bin (to-bin x)
+
+from-bin : Bin → ℕ
+from-bin ⟨⟩ = zero
+from-bin (x O) = 2 * (from-bin x)
+from-bin (x I) = 2 * (from-bin x) + 1
+
+from-inc : ∀ (b : Bin) → from-bin (inc-bin b) ≡ suc (from-bin b)
+from-inc ⟨⟩ = refl
+from-inc (b O)
+  rewrite
+    +-identityʳ (from-bin b)
+  | +-suc (from-bin b + from-bin b) zero
+  | +-identityʳ (from-bin b + from-bin b)
+  = refl
+from-inc (b I)
+  rewrite
+    from-inc b
+  | +-identityʳ (suc (from-bin b))
+  | +-identityʳ (from-bin b)
+  | +-suc (from-bin b) (from-bin b)
+  | +-assoc (from-bin b) (from-bin b) 1
+  | +-suc (from-bin b) zero
+  | +-identityʳ (from-bin b)
+  | +-suc (from-bin b) (from-bin b)
+  = refl
+
+from-to-bin : ∀ (n : ℕ) → from-bin (to-bin n) ≡ n
+from-to-bin zero = refl
+from-to-bin (suc n)
+  rewrite
+    from-inc (to-bin n)
+  | from-to-bin n
+  = refl
+
+bin-embedding : ℕ ≲ Bin
+bin-embedding =
+  record
+    { to      = to-bin
+    ; from    = from-bin
+    ; from∘to = from-to-bin
+    }      
+    
+-- Standard library
+
+-- import Function.Base using (_∘_)
+-- import Function.Bundles using (_↔_; _↩_)
+
+-- Unicode
+
+-- ∘  U+2218  RING OPERATOR (\o, \circ, \comp)
+-- λ  U+03BB  GREEK SMALL LETTER LAMBDA (\lambda, \Gl)
+-- ≃  U+2243  ASYMPTOTICALLY EQUAL TO (\~-)
+-- ≲  U+2272  LESS-THAN OR EQUIVALENT TO (\<~)
+-- ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>)
