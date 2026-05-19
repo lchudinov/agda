@@ -264,3 +264,35 @@ open ≲-Reasoning
     ; from∘to = from∘to A≃B
     }
       
+-- Exercise _⇔_ (practice)
+
+record _⇔_ (A B : Set) : Set where -- \<=>
+  field 
+    to   : A → B
+    from : B → A
+
+open _⇔_
+
+⇔-refl : ∀ {A : Set} → A ⇔ A
+⇔-refl =
+  record
+    { to = λ{x → x}
+    ; from = λ{y → y}
+    }
+    
+⇔-trans : ∀ {A B C : Set} → A ⇔ B → B ⇔ C → A ⇔ C
+⇔-trans A⇔B B⇔C =
+  record
+    { to      = λ{x → to   B⇔C (to   A⇔B x)}
+    ; from    = λ{y → from A⇔B (from B⇔C y)}
+    }
+    
+⇔-sym : ∀ {A B : Set}
+  → A ⇔ B
+    -----
+  → B ⇔ A
+⇔-sym A⇔B = 
+  record
+    { to      = from A⇔B
+    ; from    = to  A⇔B
+    }
