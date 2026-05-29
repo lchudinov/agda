@@ -143,7 +143,7 @@ to∘from′ (mk-≃′ f g g∘f f∘g) = f∘g
 module ≃-Reasoning where
   
   infix  1 ≃-begin_
-  infixr 2 _≃<_>_
+  infixr 2 _≃⟨_⟩_
   infix  3 _≃-∎
 
 ≃-begin_ : ∀ {A B : Set}
@@ -152,12 +152,12 @@ module ≃-Reasoning where
   → A ≃ B
 ≃-begin A≃B = A≃B
 
-_≃<_>_ : ∀ (A : Set) {B C : Set}
+_≃⟨_⟩_ : ∀ (A : Set) {B C : Set}
   → A ≃ B
   → B ≃ C
     -----
   → A ≃ C
-A ≃< A≃B > B≃C = ≃-trans A≃B B≃C
+A ≃⟨ A≃B ⟩ B≃C = ≃-trans A≃B B≃C
 
 _≃-∎ : ∀ (A : Set)
   --------
