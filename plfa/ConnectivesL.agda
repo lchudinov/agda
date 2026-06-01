@@ -97,4 +97,69 @@ data Tri : Set where
     ; from∘to   = λ{ w → refl }
     ; to∘from   = λ{ w → refl }
     }
-    
+
+-- Truth is unit
+
+record ⊤ : Set where -- \top
+  constructor tt
+
+η-⊤ : ∀ (w : ⊤) → tt ≡ w
+η-⊤ w = refl
+
+truth : ⊤
+truth = _
+
+data ⊤′ : Set where
+  
+  tt′ :
+    --
+    ⊤′
+
+η-⊤′ : ∀ (w : ⊤′) → tt′ ≡ w
+η-⊤′ tt′ = refl
+
+⊤-count : ⊤ → ℕ
+⊤-count tt = 1
+
+⊤-identityˡ : ∀ {A : Set} → ⊤ × A ≃ A
+⊤-identityˡ =
+  record
+    { to      = λ{ ⟨ tt , x ⟩ → x }
+    ; from    = λ{ x → ⟨ tt , x ⟩ }
+    ; from∘to = λ{ ⟨ tt , x ⟩ → refl }
+    ; to∘from = λ{ x → refl }
+    }
+
+-- I coudn't make this work
+-- ⊤-identityʳ : ∀ {A : Set} → (A × ⊤) ≃ A
+-- ⊤-identityʳ {A} =
+--   ≃-begin
+--     (A × ⊤)
+--   ≃⟨ ×-comm ⟩
+--     (⊤ × A)
+--   ≃⟨ ⊤-identityˡ ⟩
+--     A
+--   ≃-∎
+  
+⊤-identityʳ : ∀ {A : Set} → (A × ⊤) ≃ A
+⊤-identityʳ =
+  record
+    { to      = λ{ ⟨ x , tt ⟩ → x }
+    ; from    = λ{ x → ⟨ x , tt ⟩ }
+    ; from∘to = λ{ ⟨ x , tt ⟩ → refl }
+    ; to∘from = λ{ x → refl }
+    }
+
+-- Disjunction is sum
+
+data _⊎_ (A B : Set) : Set where -- \u+
+  
+  inj₁ :
+      A
+      -----
+    → A ⊎ B
+
+  inj₂ :
+      B
+      -----
+    → A ⊎ B
