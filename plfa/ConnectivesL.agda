@@ -163,3 +163,55 @@ data _⊎_ (A B : Set) : Set where -- \u+
       B
       -----
     → A ⊎ B
+
+case-⊎ : ∀ {A B C : Set}
+  → (A → C)
+  → (B → C)
+  → A ⊎ B
+    ---------
+  → C
+case-⊎ f g (inj₁ x) = f x
+case-⊎ f g (inj₂ y) = g y
+
+η-⊎ : ∀ {A B : Set} (w : A ⊎ B) → case-⊎ inj₁ inj₂ w ≡ w
+η-⊎ (inj₁ x) = refl
+η-⊎ (inj₂ y) = refl
+
+uniq-⊎ : ∀ {A B C : Set} (h : A ⊎ B → C) (w : A ⊎ B) → 
+  case-⊎ (h ∘ inj₁) (h ∘ inj₂) w ≡ h w
+uniq-⊎ h (inj₁ x) = refl
+uniq-⊎ h (inj₂ y) = refl
+
+infixr 1 _⊎_
+
+⊎-count : Bool ⊎ Tri → ℕ
+⊎-count (inj₁ true)   =  1
+⊎-count (inj₁ false)  =  2
+⊎-count (inj₂ aa)     =  3
+⊎-count (inj₂ bb)     =  4
+⊎-count (inj₂ cc)     =  5
+
+-- Exercise ⊎-comm (recommended)
+-- Show sum is commutative up to isomorphism.
+
+-- ⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+-- ⊎-comm = 
+--   record
+--     { to        = λ{ x → (inj₂ x) ⊎ (inj₁ x)} 
+--     ; from      = λ{ y → (inj₂ y) ⊎ (inj₁ y)} 
+--     ; from∘to   = λ{ w → refl }
+--     ; to∘from   = λ{ w → refl }
+--     }
+
+⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+⊎-comm =
+  record
+    { to      = λ { (inj₁ x) → inj₂ x
+                  ; (inj₂ y) → inj₁ y }
+    ; from    = λ { (inj₁ y) → inj₂ y
+                  ; (inj₂ x) → inj₁ x }
+    ; from∘to = λ { (inj₁ x) → refl
+                  ; (inj₂ y) → refl }
+    ; to∘from = λ { (inj₁ y) → refl
+                  ; (inj₂ x) → refl }
+    }
