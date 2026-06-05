@@ -194,17 +194,33 @@ infixr 1 _⊎_
 -- Exercise ⊎-comm (recommended)
 -- Show sum is commutative up to isomorphism.
 
--- ⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
--- ⊎-comm = 
---   record
---     { to        = λ{ x → (inj₂ x) ⊎ (inj₁ x)} 
---     ; from      = λ{ y → (inj₂ y) ⊎ (inj₁ y)} 
---     ; from∘to   = λ{ w → refl }
---     ; to∘from   = λ{ w → refl }
---     }
+to-prof : ∀ {A B : Set} → A ⊎ B → B ⊎ A
+to-prof (inj₁ x) = inj₂ x
+to-prof (inj₂ y) = inj₁ y
+
+from-prof : ∀ {A B : Set} → B ⊎ A → A ⊎ B 
+from-prof (inj₁ y) = inj₂ y
+from-prof (inj₂ x) = inj₁ x
+
+from-to-prof : ∀ {A B : Set} (w : A ⊎ B) → from-prof (to-prof w) ≡ w
+from-to-prof (inj₁ x) = refl
+from-to-prof (inj₂ x) = refl
+
+to-from-prof : ∀ {A B : Set} (w : B ⊎ A) → to-prof (from-prof w) ≡ w
+to-from-prof (inj₁ x) = refl
+to-from-prof (inj₂ x) = refl
 
 ⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
-⊎-comm =
+⊎-comm = 
+  record
+    { to        = to-prof 
+    ; from      = from-prof 
+    ; from∘to   = from-to-prof 
+    ; to∘from   = to-from-prof
+    }
+
+⊎-comm′ : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+⊎-comm′ =
   record
     { to      = λ { (inj₁ x) → inj₂ x
                   ; (inj₂ y) → inj₁ y }
@@ -215,3 +231,7 @@ infixr 1 _⊎_
     ; to∘from = λ { (inj₁ y) → refl
                   ; (inj₂ x) → refl }
     }
+
+-- Exercise ⊎-assoc (practice)
+
+-- ⊎-assoc : ∀ {A B C : Set} → A ⊎ B ≃ B ⊎ C ≃ A ⊎ C
