@@ -234,4 +234,31 @@ to-from-prof (inj₂ x) = refl
 
 -- Exercise ⊎-assoc (practice)
 
--- ⊎-assoc : ∀ {A B C : Set} → A ⊎ B ≃ B ⊎ C ≃ A ⊎ C
+to-prof-assoc : ∀ {A B C : Set} → (A ⊎ B) ⊎ C → A ⊎ (B ⊎ C) 
+to-prof-assoc (inj₁ (inj₁ x)) = inj₁ x
+to-prof-assoc (inj₁ (inj₂ x)) = inj₂ (inj₁ x)
+to-prof-assoc (inj₂ x) = inj₂ (inj₂ x) 
+
+from-prof-assoc : ∀ {A B C : Set} → A ⊎ (B ⊎ C) → (A ⊎ B) ⊎ C 
+from-prof-assoc (inj₁ x) = inj₁ (inj₁ x)
+from-prof-assoc (inj₂ (inj₁ x)) = inj₁ (inj₂ x)
+from-prof-assoc (inj₂ (inj₂ x)) = inj₂ x
+
+from-to-prof-assoc : ∀ {A B C : Set} (w : (A ⊎ B) ⊎ C) → from-prof-assoc (to-prof-assoc w) ≡ w
+from-to-prof-assoc (inj₁ (inj₁ x)) = refl
+from-to-prof-assoc (inj₁ (inj₂ x)) = refl
+from-to-prof-assoc (inj₂ x) = refl
+
+to-from-prof-assoc : ∀ {A B C : Set} (w : A ⊎ (B ⊎ C)) → to-prof-assoc (from-prof-assoc w) ≡ w
+to-from-prof-assoc (inj₁ x) = refl
+to-from-prof-assoc (inj₂ (inj₁ x)) = refl
+to-from-prof-assoc (inj₂ (inj₂ x)) = refl
+
+⊎-assoc : ∀ {A B C : Set} → (A ⊎ B) ⊎ C ≃ A ⊎ (B ⊎ C)
+⊎-assoc =
+  record
+    { to = to-prof-assoc
+    ; from = from-prof-assoc
+    ; from∘to = from-to-prof-assoc
+    ; to∘from = to-from-prof-assoc
+    }
