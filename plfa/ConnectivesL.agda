@@ -262,3 +262,66 @@ to-from-prof-assoc (inj₂ (inj₂ x)) = refl
     ; from∘to = from-to-prof-assoc
     ; to∘from = to-from-prof-assoc
     }
+
+-- False is empty
+
+data ⊥ : Set where -- \bot
+  -- no clauses!
+
+⊥-elim : ∀ {A : Set}
+  → ⊥
+    --
+  → A
+⊥-elim ()
+
+uniq-⊥ : ∀ {C : Set} (h : ⊥ → C) (w : ⊥) → ⊥-elim w ≡ h w
+uniq-⊥ h ()
+
+⊥-count : ⊥ → ℕ
+⊥-count ()
+
+-- Exercise ⊥-identityˡ (recommended)
+
+⊥-to-prof-l : ∀ {A : Set} → ⊥ ⊎ A → A
+⊥-to-prof-l (inj₂ x) = x
+
+⊥-from-prof-l : ∀ {A : Set} → A → ⊥ ⊎ A
+⊥-from-prof-l x = (inj₂ x)
+
+⊥-from-to-prof-l : ∀ {A : Set} (w : ⊥ ⊎ A) → ⊥-from-prof-l (⊥-to-prof-l w) ≡ w
+⊥-from-to-prof-l (inj₂ x) = refl 
+
+⊥-to-from-prof-l : ∀ {A B : Set} (a : A) → ⊥-to-prof-l (⊥-from-prof-l a) ≡ a
+⊥-to-from-prof-l a = refl
+
+⊥-identityˡ : ∀ {A : Set} → ⊥ ⊎ A ≃ A
+⊥-identityˡ =
+  record
+    { to      = ⊥-to-prof-l
+    ; from    = ⊥-from-prof-l
+    ; from∘to = ⊥-from-to-prof-l
+    ; to∘from = ⊥-to-from-prof-l
+    }
+    
+-- Exercise ⊥-identity (recommended)
+
+⊥-to-prof-r : ∀ {A : Set} → A ⊎ ⊥ → A
+⊥-to-prof-r (inj₁ x) = x
+
+⊥-from-prof-r : ∀ {A : Set} → A → A ⊎ ⊥
+⊥-from-prof-r x = (inj₁ x)
+
+⊥-from-to-prof-r : ∀ {A : Set} (w : A ⊎ ⊥) → ⊥-from-prof-r (⊥-to-prof-r w) ≡ w
+⊥-from-to-prof-r (inj₁ x) = refl 
+
+⊥-to-from-prof-r : ∀ {A B : Set} (a : A) → ⊥-to-prof-r (⊥-from-prof-r a) ≡ a
+⊥-to-from-prof-r a = refl
+
+⊥-identityʳ : ∀ {A : Set} → A ⊎ ⊥ ≃ A
+⊥-identityʳ =
+  record
+    { to      = ⊥-to-prof-r
+    ; from    = ⊥-from-prof-r
+    ; from∘to = ⊥-from-to-prof-r
+    ; to∘from = ⊥-to-from-prof-r
+    }
