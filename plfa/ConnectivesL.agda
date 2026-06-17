@@ -376,3 +376,62 @@ currying =
     ; from∘to = λ{ f → refl }
     ; to∘from = λ{ ⟨ g , h ⟩ → refl }
     }
+    
+-- Distribution
+
+×-distrib-⊎ : ∀ {A B C : Set} → (A ⊎ B) × C ≃ (A × C) ⊎ (B × C)
+×-distrib-⊎ =
+  record
+    { to      = λ{ ⟨ inj₁ x , z ⟩ → (inj₁ ⟨ x , z ⟩)
+                 ; ⟨ inj₂ y , z ⟩ → (inj₂ ⟨ y , z ⟩)
+                 }
+    ; from    = λ{ (inj₁ ⟨ x , z ⟩) → ⟨ inj₁ x , z ⟩ 
+                 ; (inj₂ ⟨ y , z ⟩) → ⟨ inj₂ y , z ⟩ 
+                 }
+    ; from∘to = λ{ ⟨ inj₁ x , z ⟩ → refl
+                 ; ⟨ inj₂ y , z ⟩ → refl
+                 }
+    ; to∘from = λ{ (inj₁ ⟨ x , z ⟩) → refl 
+                 ; (inj₂ ⟨ y , z ⟩) → refl
+                 }
+    }
+
+⊎-distrib-× : ∀ {A B C : Set} → (A × B) ⊎ C ≲ (A ⊎ C) × (B ⊎ C)
+⊎-distrib-× =
+  record
+    { to      = λ{ ( inj₁ ⟨ x , y ⟩ ) → ⟨ inj₁ x , inj₁ y ⟩
+                 ; ( inj₂ z ) → ⟨ inj₂ z , inj₂ z ⟩
+                 }
+    ; from    = λ{ ⟨ inj₁ x , inj₁ y ⟩ → (inj₁ ⟨ x , y ⟩) 
+                 ; ⟨ inj₁ x , inj₂ z ⟩ → (inj₂ z)
+                 ; ⟨ inj₂ z , _ ⟩ → (inj₂ z)
+                 }
+    ; from∘to = λ{ (inj₁ ⟨ x , y ⟩) → refl
+                 ; (inj₂ z)         → refl
+                 }
+    }
+
+-- Exercise ⊎-weak-× (recommended)
+
+⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
+⊎-weak-× ⟨ inj₁ x , z ⟩ = inj₁ x
+⊎-weak-× ⟨ inj₂ x , z ⟩ = inj₂ ⟨ x , z ⟩
+
+-- Exercise ⊎×-implies-×⊎ (practice)
+
+⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
+⊎×-implies-×⊎ (inj₁ ⟨ x , y ⟩) = ⟨ inj₁ x , inj₁ y ⟩
+⊎×-implies-×⊎ (inj₂ ⟨ z , k ⟩) = ⟨ inj₂ z , inj₂ k ⟩
+
+-- Does the converse hold? If so, prove; if not, give a counterexample.
+
+-- No, it doesn't hold
+
+-- Standard library
+-- Definitions similar to those in this chapter can be found in the standard library:
+
+import Data.Product using (_×_; proj₁; proj₂) renaming (_,_ to ⟨_,_⟩)
+import Data.Unit using (⊤; tt)
+import Data.Sum using (_⊎_; inj₁; inj₂) renaming ([_,_] to case-⊎)
+import Data.Empty using (⊥; ⊥-elim)
+import Function.Bundles using (_⇔_)
