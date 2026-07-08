@@ -48,3 +48,47 @@ open import Function using (_∘_)
     ; to∘from = (λ w → refl)
     ; from∘to = (λ w → refl)
     }
+    
+-- Exercise ⊎∀-implies-∀⊎ (practice)
+-- Show that a disjunction of universals implies a universal of disjunctions:
+
+-- postulate
+⊎∀-implies-∀⊎ : ∀ {A : Set} {B C : A → Set} →
+  (∀ (x : A) → B x) ⊎ (∀ (x : A) → C x) → ∀ (x : A) → B x ⊎ C x
+⊎∀-implies-∀⊎ (inj₁ w) x = inj₁ (w x)
+⊎∀-implies-∀⊎ (inj₂ w) x = inj₂ (w x)
+
+-- Exercise ∀-× (practice)
+-- Consider the following type.
+
+data Tri : Set where
+  aa : Tri
+  bb : Tri
+  cc : Tri
+  
+∀-×-to : ∀ {B : Tri → Set} → (∀ (x : Tri) → B x) → B aa × B bb × B cc
+∀-×-to w = ⟨ w aa , ⟨ w bb , w cc ⟩ ⟩
+
+∀-×-from : ∀ {B : Tri → Set} → B aa × B bb × B cc → (∀ (x : Tri) → B x)
+∀-×-from ⟨ Baa , ⟨ Bbb , Bcc ⟩ ⟩ = λ { aa → Baa ; bb → Bbb ; cc → Bcc }
+
+-- ∀-×-from : ∀ {B : Tri → Set} → B aa × B bb × B cc → (∀ (x : Tri) → B x)
+-- ∀-×-from ⟨ Baa , ⟨ Bbb , Bcc ⟩ ⟩ = λ
+--   { aa → Baa
+--   ; bb → Bbb
+--   ; cc → Bcc
+--   }
+
+∀-× : ∀ {B : Tri → Set} → (∀ (x : Tri) → B x) ≃ B aa × B bb × B cc
+∀-× = 
+  record
+    { to = (λ w → ⟨ w aa , ⟨ w bb , w cc ⟩ ⟩ )
+    ; from = (λ { ⟨ Baa , ⟨ Bbb , Bcc ⟩ ⟩ → λ { aa → Baa ; bb → Bbb ; cc → Bcc } })
+    ; to∘from = λ { w → refl }
+    ; from∘to = λ w →
+        ∀-extensionality λ
+          { aa → refl
+          ; bb → refl
+          ; cc → refl
+          }
+    }      
