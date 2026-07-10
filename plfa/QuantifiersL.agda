@@ -92,3 +92,50 @@ data Tri : Set where
           ; cc → refl
           }
     }      
+    
+-- Existentials
+
+record Σ (A : Set) (B : A → Set) : Set where -- \Sigma
+  constructor ⟨_,_⟩
+  field
+    proj₁ : A
+    proj₂ : B proj₁
+
+Σ-syntax = Σ
+infix 2 Σ-syntax
+syntax Σ-syntax A (λ x → Bx) = Σ[ x ∈ A ] Bx
+
+data Σ′ (A : Set) (B : A → Set) : Set where
+  ⟨_,_⟩′ : (x : A) → B x → Σ′ A B
+  
+proj₁′ : ∀ {A : Set} {B : A → Set} → Σ′ A B → A
+proj₁′ ⟨ x , y ⟩′ = x
+
+proj₂′ : ∀ {A : Set} {B : A → Set} → ∀ (w : Σ′ A B) → B (proj₁′ w)
+proj₂′ ⟨ x , y ⟩′ = y
+
+_×′_ : Set → Set → Set
+A ×′ B = Σ[ x ∈ A ] B
+
+∃ : ∀ {A : Set} (B : A → Set) → Set -- \ex
+∃ {A} B = Σ A B
+
+∃-syntax = ∃
+syntax ∃-syntax (λ x → B) = ∃[ x ] B
+
+∃-elim : ∀ {A : Set} {B : A → Set} {C : Set}
+  → (∀ x → B x → C)
+  → ∃[ x ] B x
+    ---------------
+  → C
+∃-elim f ⟨ x , y ⟩ = f x y
+
+∀∃-currying : ∀ {A : Set} {B : A → Set} {C : Set}
+  → (∀ x → B x → C) ≃ (∃[ x ] B x → C)
+∀∃-currying =
+  record
+    { to      =  λ{ f → λ{ ⟨ x , y ⟩ → f x y }}
+    ; from    =  λ{ g → λ{ x → λ{ y → g ⟨ x , y ⟩ }}}
+    ; from∘to =  λ{ f → refl }
+    ; to∘from =  λ{ g → refl }
+    }
