@@ -139,3 +139,37 @@ syntax ∃-syntax (λ x → B) = ∃[ x ] B
     ; from∘to =  λ{ f → refl }
     ; to∘from =  λ{ g → refl }
     }
+    
+-- Exercise ∃-distrib-⊎ (recommended)
+-- Show that existentials distribute over disjunction:
+∃-distrib-⊎-from : ∀ {A : Set} {B C : A → Set} →
+  ∃[ x ] (B x ⊎ C x) → (∃[ x ] B x) ⊎ (∃[ x ] C x)
+∃-distrib-⊎-from ⟨ b , inj₁ x ⟩ = inj₁ ⟨ b , x ⟩
+∃-distrib-⊎-from ⟨ b , inj₂ y ⟩ = inj₂ ⟨ b , y ⟩
+
+∃-distrib-⊎-to : ∀ {A : Set} {B C : A → Set} →
+  (∃[ x ] B x) ⊎ (∃[ x ] C x) → ∃[ x ] (B x ⊎ C x) 
+∃-distrib-⊎-to (inj₁ x) = ⟨ x .Σ.proj₁ , inj₁ (x .Σ.proj₂) ⟩
+∃-distrib-⊎-to (inj₂ y) = ⟨ y .Σ.proj₁ , inj₂ (y .Σ.proj₂) ⟩  
+
+∃-distrib-⊎-from-to : ∀ {A : Set} {B C : A → Set} →
+  (w : ∃[ x ] (B x ⊎ C x)) →  ∃-distrib-⊎-to (∃-distrib-⊎-from w) ≡ w
+∃-distrib-⊎-from-to ⟨ a , inj₁ x ⟩ = refl
+∃-distrib-⊎-from-to ⟨ a , inj₂ y ⟩ = refl
+
+∃-distrib-⊎-to-from : ∀ {A : Set} {B C : A → Set} →
+  (w : (∃[ x ] B x) ⊎ (∃[ x ] C x)) →  ∃-distrib-⊎-from (∃-distrib-⊎-to w) ≡ w
+∃-distrib-⊎-to-from (inj₁ x) = refl
+∃-distrib-⊎-to-from (inj₂ y) = refl
+
+
+
+∃-distrib-⊎ : ∀ {A : Set} {B C : A → Set} →
+    ∃[ x ] (B x ⊎ C x) ≃ (∃[ x ] B x) ⊎ (∃[ x ] C x)
+∃-distrib-⊎ =
+  record
+    { to      =  ∃-distrib-⊎-from
+    ; from    =  ∃-distrib-⊎-to
+    ; from∘to =  ∃-distrib-⊎-from-to
+    ; to∘from =  ∃-distrib-⊎-to-from
+    }
