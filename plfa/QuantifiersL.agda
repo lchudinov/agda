@@ -173,3 +173,45 @@ syntax ∃-syntax (λ x → B) = ∃[ x ] B
     ; from∘to =  ∃-distrib-⊎-from-to
     ; to∘from =  ∃-distrib-⊎-to-from
     }
+    
+-- Exercise ∃×-implies-×∃ (practice)
+-- Show that an existential of conjunctions implies a conjunction of existentials:
+
+-- postulate
+∃×-implies-×∃ : ∀ {A : Set} {B C : A → Set} →
+  ∃[ x ] (B x × C x) → (∃[ x ] B x) × (∃[ x ] C x)
+∃×-implies-×∃ ⟨ x , ⟨ bx , cx ⟩ ⟩ = ⟨ ⟨ x , bx ⟩ , ⟨ x , cx ⟩ ⟩
+
+-- Exercise ∃-⊎ (practice)
+-- Let Tri and B be as in Exercise ∀-×. Show that ∃[ x ] B x is isomorphic to B aa ⊎ B bb ⊎ B cc.
+
+∃-⊎-to : ∀ {B : Tri → Set} → (∃[ x ] B x) → B aa ⊎ B bb ⊎ B cc
+∃-⊎-to ⟨ aa , bx ⟩ = inj₁ bx
+∃-⊎-to ⟨ bb , bx ⟩ = inj₂ (inj₁ bx)
+∃-⊎-to ⟨ cc , bx ⟩ = inj₂ (inj₂ bx)
+
+∃-⊎-from : ∀ {B : Tri → Set} → B aa ⊎ B bb ⊎ B cc → ∃[ x ] B x
+∃-⊎-from (inj₁ x) = ⟨ aa , x ⟩
+∃-⊎-from (inj₂ (inj₁ x)) = ⟨ bb , x ⟩
+∃-⊎-from (inj₂ (inj₂ y)) = ⟨ cc , y ⟩
+
+∃-⊎-from-to : ∀ {B : Tri → Set} → (w : (∃[ x ] B x)) → ∃-⊎-from (∃-⊎-to w) ≡ w 
+∃-⊎-from-to ⟨ aa , proj₄ ⟩ = refl
+∃-⊎-from-to ⟨ bb , proj₄ ⟩ = refl
+∃-⊎-from-to ⟨ cc , proj₄ ⟩ = refl
+
+∃-⊎-to-from : ∀ {B : Tri → Set} → (w : (B aa ⊎ B bb ⊎ B cc)) → ∃-⊎-to (∃-⊎-from w) ≡ w
+∃-⊎-to-from (inj₁ x) = refl
+∃-⊎-to-from (inj₂ (inj₁ x)) = refl
+∃-⊎-to-from (inj₂ (inj₂ y)) = refl
+
+
+-- postulate
+∃-⊎ : ∀ {B : Tri → Set} → (∃[ x ] B x) ≃ B aa ⊎ B bb ⊎ B cc
+∃-⊎ = 
+  record
+    { to = ∃-⊎-to
+    ; from = ∃-⊎-from
+    ; from∘to = ∃-⊎-from-to
+    ; to∘from = ∃-⊎-to-from
+    }
