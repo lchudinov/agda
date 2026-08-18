@@ -273,3 +273,35 @@ odd-∃′   (odd-suc e) with even-∃′ e
 ∃-+-≤ : ∀ {y z : ℕ} → ∃[ x ] (x + y ≡ z) → y ≤ z
 ∃-+-≤ ⟨ zero , refl ⟩ = ≤-refl
 ∃-+-≤ ⟨ suc x , refl ⟩ = ≤-step (∃-+-≤ ⟨ x , refl ⟩)
+
+-- Existentials, Universals, and Negation
+
+¬∃≃∀¬ : ∀ {A : Set} {B : A → Set}
+  → (¬ ∃[ x ] B x) ≃ ∀ x → ¬ B x
+¬∃≃∀¬ =
+  record
+    { to      =  λ{ ¬∃xy x y → ¬∃xy ⟨ x , y ⟩ }
+    ; from    =  λ{ ∀¬xy ⟨ x , y ⟩ → ∀¬xy x y }
+    ; from∘to =  λ{ ¬∃xy → refl }
+    ; to∘from =  λ{ ∀¬xy → refl }
+    }
+
+-- Exercise ∃¬-implies-¬∀ (recommended)
+-- Show that existential of a negation implies negation of a universal:
+
+postulate
+  ∃¬-implies-¬∀ : ∀ {A : Set} {B : A → Set}
+    → ∃[ x ] (¬ B x)
+      --------------
+    → ¬ (∀ x → B x)
+    
+-- Exercise Bin-isomorphism (stretch)
+
+-- ≡One : ∀ {b : Bin} (o o′ : One b) → o ≡ o′
+
+-- ≡Can : ∀ {b : Bin} (c c′ : Can b) → c ≡ c′
+
+-- Standard library
+-- Definitions similar to those in this chapter can be found in the standard library:
+
+-- import Data.Product using (Σ; _,_; ∃; Σ-syntax; ∃-syntax)
