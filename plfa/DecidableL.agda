@@ -73,3 +73,25 @@ _ =
   ∎
 
 -- Relating evidence and computation
+
+T : Bool → Set
+T true = ⊤
+T false = ⊥
+
+T→≡ : ∀ (b : Bool) → T b → b ≡ true
+T→≡ true tt = refl
+T→≡ false ()
+
+≡→T : ∀ {b : Bool} → b ≡ true → T b
+≡→T refl = tt
+
+≤ᵇ→≤ : ∀ (m n : ℕ) → T (m ≤ᵇ n) → m ≤ n
+≤ᵇ→≤ zero n tt = z≤n
+≤ᵇ→≤ (suc m) (suc n) m≤ᵇn = s≤s (≤ᵇ→≤ m n m≤ᵇn)
+
+≤→≤ᵇ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ n)
+≤→≤ᵇ z≤n = tt
+≤→≤ᵇ (s≤s m≤n) = ≤→≤ᵇ m≤n
+
+-- The best of both worlds
+
