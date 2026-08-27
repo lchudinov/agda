@@ -144,5 +144,23 @@ suc m <? suc n with m <? n
 -- Exercise _≡ℕ?_ (practice)
 -- Define a function to decide whether two naturals are equal:
 
-postulate
-  _≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+¬z≡s : ∀ {m : ℕ} → ¬ (zero ≡ suc m)
+¬z≡s ()
+
+¬s≡z : ∀ {m : ℕ} → ¬ (suc m ≡ zero)
+¬s≡z ()
+
+s≡s : ∀ {m n : ℕ} → (m ≡ n) → (suc m ≡ suc n)
+s≡s refl = refl
+
+¬s≡s : ∀ {m n : ℕ} → ¬ (m ≡ n) → ¬ (suc m ≡ suc n)
+¬s≡s ¬m≡n refl = ¬m≡n refl
+
+-- postulate
+_≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n)
+zero ≡ℕ? zero = yes refl 
+suc m ≡ℕ? zero = no ¬s≡z 
+zero ≡ℕ? suc n = no ¬z≡s 
+suc m ≡ℕ? suc n with m ≡ℕ? n
+...               | yes m≡n  = yes (s≡s m≡n)
+...               | no  ¬m≡n  = no (¬s≡s ¬m≡n)
