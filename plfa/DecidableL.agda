@@ -164,3 +164,33 @@ zero ≡ℕ? suc n = no ¬z≡s
 suc m ≡ℕ? suc n with m ≡ℕ? n
 ...               | yes m≡n  = yes (s≡s m≡n)
 ...               | no  ¬m≡n  = no (¬s≡s ¬m≡n)
+
+-- Decidables from booleans, and booleans from decidables
+
+_≤?′_ : ∀ (m n : ℕ) → Dec (m ≤ n)
+m ≤?′ n with m ≤ᵇ n | ≤ᵇ→≤ m n | ≤→≤ᵇ {m} {n}
+...        | true   | p        | _            = yes (p tt)
+...        | false  | _        | ¬p           = no ¬p
+
+⌊_⌋ : ∀ {A : Set} → Dec A → Bool -- \clL \clR
+⌊ yes x ⌋ = true
+⌊ no ¬x ⌋ = false
+
+_≤ᵇ′_ : ℕ → ℕ → Bool
+m ≤ᵇ′ n = ⌊ m ≤? n ⌋
+
+toWitness : ∀ {A : Set} {D : Dec A} → T ⌊ D ⌋ → A
+toWitness {A} {yes x} tt  =  x
+toWitness {A} {no ¬x} ()
+
+fromWitness : ∀ {A : Set} {D : Dec A} → A → T ⌊ D ⌋
+fromWitness {A} {yes x} _  =  tt
+fromWitness {A} {no ¬x} x  =  ¬x x
+
+≤ᵇ′→≤ : ∀ {m n : ℕ} → T (m ≤ᵇ′ n) → m ≤ n
+≤ᵇ′→≤  =  toWitness
+
+≤→≤ᵇ′ : ∀ {m n : ℕ} → m ≤ n → T (m ≤ᵇ′ n)
+≤→≤ᵇ′  =  fromWitness
+
+-- Logical connectives
