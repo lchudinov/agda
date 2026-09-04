@@ -194,3 +194,99 @@ fromWitness {A} {no ¬x} x  =  ¬x x
 ≤→≤ᵇ′  =  fromWitness
 
 -- Logical connectives
+
+infixr 6 _∧_ -- \and
+
+_∧_ : Bool → Bool → Bool
+true  ∧ true  = true
+false ∧ _     = false
+_     ∧ false = false
+
+infixr 6 _×-dec_
+
+_×-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A × B)
+yes x ×-dec yes y = yes ⟨ x , y ⟩
+no ¬x ×-dec _ = no λ{ ⟨ x , y ⟩ → ¬x x }
+_ ×-dec no ¬y = no λ{ ⟨ x , y ⟩ → ¬y y }
+
+infixr 5 _∨_ -- \and
+
+_∨_ : Bool → Bool → Bool
+true  ∨ _     = true
+_     ∨ true  = true
+false ∨ false = false
+
+infixr 5 _⊎-dec_
+
+_⊎-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⊎ B)
+yes x ⊎-dec _     = yes (inj₁ x)
+_     ⊎-dec yes y = yes (inj₂ y)
+no ¬x ⊎-dec no ¬y = no λ{ (inj₁ x) → ¬x x ; (inj₂ y) → ¬y y }
+
+not : Bool → Bool
+not true = false
+not false = true
+
+¬? : ∀ {A : Set} → Dec A → Dec (¬ A)
+¬? (yes x)  =  no (¬¬-intro x)
+¬? (no ¬x)  =  yes ¬x
+
+_⊃_ : Bool → Bool → Bool --\sup
+_      ⊃ true  = true
+false  ⊃ _     = true
+true   ⊃ false = false
+
+_→-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A → B)
+_     →-dec yes y  =  yes (λ _ → y)
+no ¬x →-dec _      =  yes (λ x → ⊥-elim (¬x x))
+yes x →-dec no ¬y  =  no (λ f → ¬y (f x))
+
+-- Exercise erasure (practice)
+-- Show that erasure relates corresponding boolean and decidable operations:
+
+∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
+∧-× (yes x) (yes y) = refl
+∧-× (yes x) (no y) = refl
+∧-× (no x) (yes y) = refl
+∧-× (no x) (no y) = refl
+
+∨-⊎ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
+∨-⊎ (yes x) (yes y) = refl
+∨-⊎ (yes x) (no y) = refl
+∨-⊎ (no x) (yes y) = refl
+∨-⊎ (no x) (no y) = refl
+
+not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
+not-¬ (yes x) = refl
+not-¬ (no x) = refl
+
+-- Exercise iff-erasure (recommended)
+-- Give analogues of the _⇔_ operation from Chapter Isomorphism, operation on booleans and decidables, and also show the corresponding erasure:
+
+_iff_ : Bool → Bool → Bool
+false iff false = true
+false iff true  = false
+true  iff false = false
+true  iff true  = true
+
+_⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
+yes x ⇔-dec yes y = yes
+  record
+    { to   = λ _ → y
+    ; from = λ _ → x
+    }
+yes x ⇔-dec no y = no (λ p → y (_⇔_.to p x))
+no x ⇔-dec yes y = no (λ p → x (_⇔_.from p y))
+no x ⇔-dec no y = yes
+  record
+    { to   = λ a → ⊥-elim (x a)
+    ; from = λ b → ⊥-elim (y b)
+    }
+
+iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
+iff-⇔ (yes x) (yes y) = refl
+iff-⇔ (yes x) (no y) = refl
+iff-⇔ (no x) (yes y) = refl
+iff-⇔ (no x) (no y) = refl
+
+-- Proof by reflection
