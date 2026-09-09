@@ -290,3 +290,34 @@ iff-⇔ (no x) (yes y) = refl
 iff-⇔ (no x) (no y) = refl
 
 -- Proof by reflection
+
+minus : (m n : ℕ) (n≤m : n ≤ m) → ℕ
+minus m zero _ = m
+minus (suc m) (suc n) (s≤s n≤m) = minus m n n≤m
+
+_ : minus 5 3 (s≤s (s≤s (s≤s z≤n))) ≡ 2
+_ = refl
+
+_-_ : (m n : ℕ) {n≤m : T ⌊ n ≤? m ⌋} → ℕ
+_-_ m n {n≤m} = minus m n (toWitness n≤m)
+
+_ : 5 - 3 ≡ 2
+_ = refl
+
+True : ∀ {Q} → Dec Q → Set
+True Q = T ⌊ Q ⌋
+
+-- Exercise False (practice)
+-- Give analogues of True, toWitness, and fromWitness which work with negated properties.
+-- Call these False, toWitnessFalse, and fromWitnessFalse.
+
+False : ∀ {Q} → Dec Q → Set
+False Q = T (not ⌊ Q ⌋)
+
+toWitnessFalse : ∀ {A : Set} {D : Dec A} → False D → ¬ A
+toWitnessFalse {A} {yes x} ()
+toWitnessFalse {A} {no ¬x} tt = ¬x 
+
+fromWitnessFalse : ∀ {A : Set} {D : Dec A} → ¬ A → False D
+fromWitnessFalse {A} {yes x} ¬x  =  ¬x x
+fromWitnessFalse {A} {no ¬x} x  =  tt
