@@ -6,7 +6,7 @@ module DecidableL where
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl)
 open Eq.≡-Reasoning
-open import Data.Nat using (ℕ; zero; suc)
+open import Data.Nat using (ℕ; zero; suc; _*_; _+_)
 open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Relation.Nullary.Negation using (¬_)
@@ -321,3 +321,84 @@ toWitnessFalse {A} {no ¬x} tt = ¬x
 fromWitnessFalse : ∀ {A : Set} {D : Dec A} → ¬ A → False D
 fromWitnessFalse {A} {yes x} ¬x  =  ¬x x
 fromWitnessFalse {A} {no ¬x} x  =  tt
+
+-- Exercise Bin-decidable (stretch)
+-- Recall that Exercises Bin, Bin-laws, and Bin-predicates define a datatype Bin of bitstrings representing natural numbers, and asks you to define the following predicates:
+
+data Bin : Set where
+  ⟨⟩ : Bin
+  _O : Bin → Bin
+  _I : Bin → Bin
+
+inc : Bin → Bin
+inc ⟨⟩ = ⟨⟩ I
+inc (b O) = b I
+inc (b I) = (inc b) O
+
+to : ℕ → Bin
+to zero = ⟨⟩ O
+to (suc b) = inc (to b)
+
+from : Bin → ℕ
+from ⟨⟩ = zero
+from (b O) = 2 * (from b)
+from (b I) = 2 * (from b) + 1
+
+data One : Bin → Set where
+  one :
+    ----
+    One (⟨⟩ I)
+
+  one_o : ∀ {b : Bin}
+    → One b
+      -------
+    → One (b O)
+
+  one_i : ∀ {b : Bin}
+    → One b
+      -------
+    → One (b I)
+
+data Can : Bin → Set where
+  c_zero : 
+    -----
+    Can ⟨⟩
+  
+  c_one : ∀ {b : Bin}
+    → One b
+      --------
+    → Can b
+
+-- Show that both of the above are decidable.
+
+-- One? : ∀ (b : Bin) → Dec (One b)
+
+-- One? ⟨⟩ = no (λ ())
+-- One? (b O) with One? b
+-- ... | yes p = yes (one_o p)
+-- ... | no ¬p = no λ {
+--     (one_o p) → ¬p p
+--   }
+-- One? (⟨⟩ I) = yes one
+-- One? (b I) with One? b
+-- ... | yes p = yes (one_i p)
+-- ... | no ¬p = yes one
+
+-- Can? : ∀ (b : Bin) → Dec (Can b)
+
+
+-- Standard Library
+-- import Data.Bool.Base using (Bool; true; false; T; _∧_; _∨_; not)
+-- import Data.Nat using (_≤?_)
+-- import Relation.Nullary using (Dec; yes; no)
+-- import Relation.Nullary.Decidable using
+--   (⌊_⌋; True; toWitness; fromWitness; _×-dec_; _⊎-dec_; ¬?)
+-- import Relation.Binary.Definitions using (Decidable)
+
+-- Unicode
+-- ∧  U+2227  LOGICAL AND (\and, \wedge)
+-- ∨  U+2228  LOGICAL OR (\or, \vee)
+-- ⊃  U+2283  SUPERSET OF (\sup)
+-- ᵇ  U+1D47  MODIFIER LETTER SMALL B  (\^b)
+-- ⌊  U+230A  LEFT FLOOR (\clL)
+-- ⌋  U+230B  RIGHT FLOOR (\clR)
