@@ -117,4 +117,46 @@ _ =
     x ∷ xs 
   ∎
   
+-- Length
+
+length : ∀ {A : Set} → List A → ℕ
+length [] = zero
+length (x ∷ xs) = suc (length xs)
+
+_ : length [ 0 , 1 , 2 ] ≡ 3
+_ =
+  begin
+    length ( 0 ∷ 1 ∷ 2 ∷ [] )
+  ≡⟨⟩
+    suc (length ( 1 ∷ 2 ∷ [] ))
+  ≡⟨⟩
+    suc (suc (length ( 2 ∷ [] )))
+  ≡⟨⟩
+    suc (suc (suc (length {ℕ} [] )))
+  ≡⟨⟩
+    suc (suc (suc zero))
+  ∎
+  
+-- Reasoning about length
+
+length-++ : ∀ {A : Set} (xs ys : List A)
+  → length (xs ++ ys) ≡ length xs + length ys
+length-++ {A} [] ys =
+  begin
+    length ([] ++ ys)
+  ≡⟨⟩
+    length ys
+  ≡⟨⟩
+    length {A} [] + length ys
+  ∎
+length-++ (x ∷ xs) ys =
+  begin
+    length ((x ∷ xs) ++ ys)
+  ≡⟨⟩
+    suc (length (xs ++ ys))
+  ≡⟨ cong suc (length-++ xs ys) ⟩
+    suc (length xs + length ys)
+  ≡⟨⟩
+    length (x ∷ xs) + length ys
+  ∎
 
