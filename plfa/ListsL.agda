@@ -202,4 +202,9 @@ reverse-++-distrib : ∀ {A : Set} (xs ys : List A) → reverse (xs ++ ys) ≡ r
 reverse-++-distrib [] ys rewrite ++-identityʳ (reverse ys) = refl
 reverse-++-distrib (x ∷ xs) ys rewrite reverse-++-distrib xs ys | ++-assoc (reverse ys) (reverse xs) [ x ]  = refl
 
-  
+-- Exercise reverse-involutive (recommended)
+reverse-involutive : ∀ {A : Set} (xs : List A) → reverse (reverse xs) ≡ xs
+reverse-involutive [] = refl
+reverse-involutive (x ∷ xs) rewrite reverse-++-distrib (reverse xs) [ x ] | reverse-involutive xs = refl
+
+
