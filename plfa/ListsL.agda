@@ -21,7 +21,7 @@ open import plfa.part1.Isomorphism using (_≃_; _⇔_)
 
 data List (A : Set) : Set where
   [] : List A
-  _∷_ : A → List A → List A  -- \::
+  _∷_ : A → List A → List A  -- \∷
 
 infixr 5 _∷_
 
@@ -160,3 +160,46 @@ length-++ (x ∷ xs) ys =
     length (x ∷ xs) + length ys
   ∎
 
+-- Reverse
+
+reverse : ∀ {A : Set} → List A → List A
+reverse [] = []
+reverse (x ∷ xs) = reverse xs ++ [ x ]
+
+_ : reverse [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+_ =
+  begin
+    reverse (0 ∷ 1 ∷ 2 ∷ [])
+  ≡⟨⟩
+    reverse (1 ∷ 2 ∷ []) ++ [ 0 ]
+  ≡⟨⟩
+    (reverse (2 ∷ []) ++ [ 1 ] ) ++ [ 0 ]
+  ≡⟨⟩
+    ((reverse [] ++ [ 2 ]) ++ [ 1 ] ) ++ [ 0 ]
+  ≡⟨⟩
+    (([] ++ [ 2 ]) ++ [ 1 ] ) ++ [ 0 ]
+  ≡⟨⟩
+    (([] ++ 2 ∷ []) ++ 1 ∷ [] ) ++ 0 ∷ []
+  ≡⟨⟩
+    ( 2 ∷ [] ++ 1 ∷ [] ) ++ 0 ∷ []
+  ≡⟨⟩
+    2 ∷ ([] ++ 1 ∷ []) ++ 0 ∷ []
+  ≡⟨⟩
+    (2 ∷ 1 ∷ []) ++ 0 ∷ []
+  ≡⟨⟩
+    2 ∷ (1 ∷ [] ++ 0 ∷ [])
+  ≡⟨⟩
+    2 ∷ 1 ∷ ([] ++ 0 ∷ [])
+  ≡⟨⟩
+    2 ∷ 1 ∷ 0 ∷ []
+  ≡⟨⟩
+    [ 2 , 1 , 0 ]
+  ∎
+
+-- Exercise reverse-++-distrib (recommended)
+
+reverse-++-distrib : ∀ {A : Set} (xs ys : List A) → reverse (xs ++ ys) ≡ reverse ys ++ reverse xs
+reverse-++-distrib [] ys rewrite ++-identityʳ (reverse ys) = refl
+reverse-++-distrib (x ∷ xs) ys rewrite reverse-++-distrib xs ys | ++-assoc (reverse ys) (reverse xs) [ x ]  = refl
+
+  
