@@ -207,4 +207,70 @@ reverse-involutive : ∀ {A : Set} (xs : List A) → reverse (reverse xs) ≡ xs
 reverse-involutive [] = refl
 reverse-involutive (x ∷ xs) rewrite reverse-++-distrib (reverse xs) [ x ] | reverse-involutive xs = refl
 
+-- Faster reverse
+
+shunt : ∀ {A : Set} → List A → List A → List A
+shunt []       ys = ys
+shunt (x ∷ xs) ys = shunt xs (x ∷ ys)
+
+shunt-reverse : ∀ {A : Set} (xs ys : List A)
+  → shunt xs ys ≡ reverse xs ++ ys
+shunt-reverse [] ys =
+  begin
+    shunt [] ys
+  ≡⟨⟩
+    ys
+  ≡⟨⟩
+    reverse [] ++ ys
+  ∎
+shunt-reverse (x ∷ xs) ys =
+  begin
+    shunt (x ∷ xs) ys
+  ≡⟨⟩
+    shunt xs (x ∷ ys)
+  ≡⟨ shunt-reverse xs (x ∷ ys) ⟩
+    reverse xs ++ (x ∷ ys)
+  ≡⟨⟩
+    reverse xs ++ ([ x ] ++ ys)
+  ≡⟨ sym (++-assoc (reverse xs) [ x ] ys) ⟩
+    (reverse xs ++ [ x ]) ++ ys
+  ≡⟨⟩
+    reverse (x ∷ xs) ++ ys
+  ∎
+
+reverse′ : ∀ {A : Set} → List A → List A
+reverse′ xs = shunt xs []
+
+reverses : ∀ {A : Set} (xs : List A)
+  → reverse′ xs ≡ reverse xs
+reverses xs =
+  begin
+    reverse′ xs
+  ≡⟨⟩
+     shunt xs []
+  ≡⟨ shunt-reverse xs [] ⟩
+    reverse xs ++ []
+  ≡⟨ ++-identityʳ (reverse xs) ⟩
+    reverse xs
+  ∎
+  
+-- shunt (x ∷ xs) ys = shunt xs (x ∷ ys)
+
+  
+_ : reverse′ [ 0 , 1 , 2 ] ≡ [ 2 , 1 , 0 ]
+_ =
+  begin
+    reverse′ (0 ∷ 1 ∷ 2 ∷ [])
+  ≡⟨⟩
+    shunt (0 ∷ 1 ∷ 2 ∷ []) []
+  ≡⟨⟩
+    shunt (1 ∷ 2 ∷ []) (0 ∷ [])
+  ≡⟨⟩
+    shunt (2 ∷ []) (1 ∷ 0 ∷ [])
+  ≡⟨⟩
+    shunt [] (2 ∷ 1 ∷ 0 ∷ [])
+  ≡⟨⟩
+    2 ∷ 1 ∷ 0 ∷ []
+  ∎
+ 
 
