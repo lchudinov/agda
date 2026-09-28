@@ -272,5 +272,62 @@ _ =
   ≡⟨⟩
     2 ∷ 1 ∷ 0 ∷ []
   ∎
- 
 
+-- Map
+
+map : ∀ {A B : Set} → (A → B) → List A → List B
+map f [] = []
+map f (x ∷ xs) = f x ∷ map f xs
+
+_ : map suc [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+_ = 
+  begin
+    map suc [ 0 , 1 , 2 ]
+  ≡⟨⟩
+      suc 0 ∷ map suc [ 1 , 2 ]
+  ≡⟨⟩
+      suc 0 ∷ suc 1 ∷ map suc [ 2 ]
+  ≡⟨⟩
+      suc 0 ∷ suc 1 ∷ suc 2 ∷ map suc []
+  ≡⟨⟩
+      suc 0 ∷ suc 1 ∷ suc 2 ∷ []
+  ≡⟨⟩
+      1 ∷ 2 ∷ 3 ∷ []
+  ∎ 
+
+sucs : List ℕ → List ℕ
+sucs = map suc
+
+_ : sucs [ 0 , 1 , 2 ] ≡ [ 1 , 2 , 3 ]
+_ =
+  begin
+    sucs [ 0 , 1 , 2 ]
+  ≡⟨⟩
+    map suc [ 0 , 1 , 2 ]
+  ≡⟨⟩
+    [ 1 , 2 , 3 ]
+  ∎
+  
+-- Exercise map-compose (practice)
+
+map-compose : ∀ {A B C : Set} → (f : A → B) → (g : B → C) → (xs : List A) → map (g ∘ f) xs ≡ (map g ∘ map f) xs
+map-compose f g [] = refl
+map-compose f g (x ∷ xs) = cong (_∷_ (g (f x))) (map-compose f g xs)
+
+-- Exercise map-++-distribute (practice)
+
+map-++-distribute : ∀ {A B : Set} → (xs ys : List A) → (f : A → B) → map f (xs ++ ys) ≡ map f xs ++ map f ys
+map-++-distribute [] ys f = refl
+map-++-distribute (x ∷ xs) ys f = cong (f x ∷_) (map-++-distribute xs ys f)
+
+-- Exercise map-Tree (practice)
+-- Define a type of trees with leaves of type A and internal nodes of type B:
+
+data Tree (A B : Set) : Set where
+  leaf : A → Tree A B
+  node : Tree A B → B → Tree A B → Tree A B
+-- Define a suitable map operator over trees:
+
+map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
+map-Tree f g (leaf x) = leaf (f x)
+map-Tree f g (node tree1 x tree2) = node (map-Tree f g tree1) (g x) (map-Tree f g tree2)
