@@ -331,3 +331,85 @@ data Tree (A B : Set) : Set where
 map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
 map-Tree f g (leaf x) = leaf (f x)
 map-Tree f g (node tree1 x tree2) = node (map-Tree f g tree1) (g x) (map-Tree f g tree2)
+
+-- Fold
+
+foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
+foldr _⊗_ e [] = e -- \otimes
+foldr _⊗_ e (x ∷ xs) = x ⊗ foldr _⊗_ e xs
+
+_ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
+_ =
+  begin
+    foldr _+_ 0 ( 1 ∷ 2 ∷ 3 ∷ 4 ∷ [] )
+  ≡⟨⟩
+    1 + foldr _+_ 0 ( 2 ∷ 3 ∷ 4 ∷ [] )
+  ≡⟨⟩
+    1 + (2 + foldr _+_ 0 ( 3 ∷ 4 ∷ [] ))
+  ≡⟨⟩
+    1 + (2 + (3 + (foldr _+_ 0 ( 4 ∷ [] ))))
+  ≡⟨⟩
+    1 + (2 + (3 + (4 + (foldr _+_ 0 [] ))))
+  ≡⟨⟩
+    1 + (2 + (3 + (4 + 0)))
+  ∎
+  
+sum : List ℕ → ℕ
+sum = foldr _+_ 0
+
+_ : sum [ 1 , 2 , 3 , 4 ] ≡ 10
+_ =
+  begin
+    sum [ 1 , 2 , 3 , 4 ]
+  ≡⟨⟩
+    foldr _+_ 0 [ 1 , 2 , 3 , 4 ]
+  ∎
+
+-- Exercise product (recommended)
+
+product : List ℕ → ℕ
+product = foldr _*_ 1
+
+-- Exercise foldr-++ (recommended)
+-- Show that fold and append are related as follows:
+
+-- postulate
+foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
+  foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
+foldr-++ _⊗_ e [] ys = refl
+foldr-++ _⊗_ e (x ∷ xs) ys = cong (_⊗_ x) (foldr-++ _⊗_ e xs ys)
+
+-- Exercise foldr-∷ (practice)
+-- Show
+
+-- foldr _∷_ [] xs ≡ xs
+
+foldr-cons : ∀ {A : Set} → (xs : List A) → foldr _∷_ [] xs ≡ xs
+foldr-cons [] = refl
+foldr-cons (x ∷ xs) = cong (_∷_ x) (foldr-cons xs)
+
+-- Show as a consequence of foldr-++ above that
+
+foldr-cons2 : ∀ {A : Set} → (xs ys : List A) → xs ++ ys ≡ foldr _∷_ ys xs
+foldr-cons2 [] ys = refl
+foldr-cons2 (x ∷ xs) ys = cong (_∷_ x) (foldr-cons2 xs ys)
+
+-- Exercise map-is-foldr (practice)
+-- Show that map can be defined using fold:
+
+-- map f ≡ foldr (λ x xs → f x ∷ xs) []
+-- The proof requires extensionality.
+
+map-is-foldr : ∀ {A B : Set} (f : A → B) (x : B) (xs : List A) → map f xs ≡ foldr (λ x xs → f x ∷ xs) [] xs
+map-is-foldr f x [] = refl
+map-is-foldr f x (x1 ∷ xs) = cong (_∷_ (f x1)) (map-is-foldr f x xs)
+
+-- Exercise fold-Tree (practice)
+-- Define a suitable fold function for the type of trees given earlier:
+
+fold-Tree : ∀ {A B C : Set} → (A → C) → (C → B → C → C) → Tree A B → C
+fold-Tree f g (leaf x) = f x
+fold-Tree f g (node left x right) = g (fold-Tree f g left) x (fold-Tree f g right)
+
+-- Exercise map-is-fold-Tree (practice)
+-- Demonstrate an analogue of map-is-foldr for the type of trees.
