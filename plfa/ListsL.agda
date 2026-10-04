@@ -5,7 +5,7 @@ module ListsL where
 -- Imports
 
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; sym; trans; cong)
+open Eq using (_≡_; refl; sym; trans; cong; cong₂)
 open Eq.≡-Reasoning
 open import Data.Bool using (Bool; true; false; T; _∧_; _∨_; not)
 open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_; _≤_; s≤s; z≤n)
@@ -330,7 +330,7 @@ data Tree (A B : Set) : Set where
 
 map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
 map-Tree f g (leaf x) = leaf (f x)
-map-Tree f g (node tree1 x tree2) = node (map-Tree f g tree1) (g x) (map-Tree f g tree2)
+map-Tree f g (node left x right) = node (map-Tree f g left) (g x) (map-Tree f g right)
 
 -- Fold
 
@@ -413,3 +413,38 @@ fold-Tree f g (node left x right) = g (fold-Tree f g left) x (fold-Tree f g righ
 
 -- Exercise map-is-fold-Tree (practice)
 -- Demonstrate an analogue of map-is-foldr for the type of trees.
+
+postulate
+  map-is-fold-Tree : ∀ {A B C D : Set} → (f : A → C) → (g : B → D) → (tree : Tree A B)
+    → map-Tree f g tree ≡ fold-Tree (λ x → leaf (f x)) (λ leftC xB rightC → node leftC (g xB) rightC) tree
+-- map-is-fold-Tree f g (leaf x) = refl
+-- map-is-fold-Tree f g (node left x right) = {!   !}
+
+-- data Tree (A B : Set) : Set where
+--   leaf : A → Tree A B
+--   node : Tree A B → B → Tree A B → Tree A B
+
+-- map-Tree : ∀ {A B C D : Set} → (A → C) → (B → D) → Tree A B → Tree C D
+-- map-Tree f g (leaf x) = leaf (f x)
+-- map-Tree f g (node left x right) = node (map-Tree f g left) (g x) (map-Tree f g right)
+
+-- fold-Tree : ∀ {A B C : Set} → (A → C) → (C → B → C → C) → Tree A B → C
+-- fold-Tree f g (leaf x) = f x
+-- fold-Tree f g (node left x right) = g (fold-Tree f g left) x (fold-Tree f g right)
+
+
+-- Exercise sum-downFrom (stretch)
+-- Define a function that counts down as follows:
+
+downFrom : ℕ → List ℕ
+downFrom zero     =  []
+downFrom (suc n)  =  n ∷ downFrom n
+-- For example:
+
+_ : downFrom 3 ≡ [ 2 , 1 , 0 ]
+_ = refl
+
+-- Prove that the sum of the numbers (n - 1) + ⋯ + 0 is equal to n * (n ∸ 1) / 2:
+postulate
+  sum-downFrom : ∀ {n : ℕ} → sum (downFrom n) * 2 ≡ n * (n ∸ 1)
+
