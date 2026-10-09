@@ -505,3 +505,31 @@ foldr-monoid _⊗_ e ⊗-monoid (x ∷ xs) y =
   ≡⟨⟩
     foldr _⊗_ e (x ∷ xs) ⊗ y
   ∎
+  
+foldr-monoid-++ : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
+  ∀ (xs ys : List A) → foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+foldr-monoid-++ _⊗_ e monoid-⊗ xs ys =
+  begin
+    foldr _⊗_ e (xs ++ ys)
+  ≡⟨ foldr-++ _⊗_ e xs ys ⟩
+    foldr _⊗_ (foldr _⊗_ e ys) xs
+  ≡⟨ foldr-monoid _⊗_ e monoid-⊗ xs (foldr _⊗_ e ys) ⟩
+    foldr _⊗_ e xs ⊗ foldr _⊗_ e ys
+  ∎
+
+-- Exercise foldl (practice)
+-- Define a function foldl which is analogous to foldr, but where operations associate to the left rather than the right. For example:
+
+-- foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
+-- foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
+
+foldl : ∀ {A B : Set} → (B → A → B) → B → List A → B
+foldl _⊗_ e [] = e
+foldl _⊗_ e (x ∷ xs) = foldl _⊗_ ( e ⊗ x) xs
+
+-- Exercise foldr-monoid-foldl (practice)
+-- Show that if _⊗_ and e form a monoid, then foldr _⊗_ e and foldl _⊗_ e always compute the same result.
+
+postulate
+  foldr-monoid-foldl : ∀ {A : Set} (_⊗_ : A → A → A) (e : A) → IsMonoid _⊗_ e →
+    ∀ (xs : List A) → foldr _⊗_ e xs ≡ foldl _⊗_ e xs
