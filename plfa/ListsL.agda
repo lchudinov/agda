@@ -13,6 +13,7 @@ open import Data.Nat.Properties using
   (+-assoc; +-identityˡ; +-identityʳ; *-assoc; *-identityˡ; *-identityʳ; *-distribʳ-+)
 open import Relation.Nullary using (¬_; Dec; yes; no)
 open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Function using (_∘_)
 open import Level using (Level)
 open import plfa.part1.Isomorphism using (_≃_; _⇔_)
@@ -590,3 +591,28 @@ All-++=⇔ xs ys =
   from [] ys ⟨ [] , Pys ⟩ = Pys
   from (x ∷ xs) ys ⟨ Px ∷ Pxs , Pys ⟩ =  Px ∷ from xs ys ⟨ Pxs , Pys ⟩
       
+-- Exercise Any-++-⇔ (recommended)
+-- Prove a result similar to All-++-⇔, but with Any in place of All, and a suitable replacement for _×_.
+-- As a consequence, demonstrate an equivalence relating _∈_ and _++_.
+
+Any-++=⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+  Any P (xs ++ ys) ⇔ (Any P xs ⊎ Any P ys)
+Any-++=⇔ xs ys =
+  record
+    { to = to xs ys
+    ; from = from xs ys
+    }
+  where
+  to : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
+    Any P (xs ++ ys) → (Any P xs ⊎ Any P ys)
+  to [] ys Pys = inj₂ Pys
+  to (x ∷ xs) ys (here Px) = inj₁ (here Px)
+  to (x ∷ xs) ys (there Pxsys) with to xs ys Pxsys
+  ... | inj₁ Pxs = inj₁ (there Pxs)
+  ... | inj₂ Pys = inj₂ Pys
+  from : ∀ { A : Set} {P : A → Set} (xs ys : List A) →
+    Any P xs ⊎ Any P ys → Any P (xs ++ ys)
+  from [] ys (inj₂ y) = y
+  from (x ∷ xs) ys (inj₁ (here x₁)) = here x₁
+  from (x ∷ xs) ys (inj₁ (there x₁)) = there ((from xs ys (inj₁ x₁)))
+  from (x ∷ xs) ys (inj₂ y) = there (from xs ys (inj₂ y))
