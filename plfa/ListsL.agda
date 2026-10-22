@@ -616,3 +616,81 @@ Any-++=⇔ xs ys =
   from (x ∷ xs) ys (inj₁ (here x₁)) = here x₁
   from (x ∷ xs) ys (inj₁ (there x₁)) = there ((from xs ys (inj₁ x₁)))
   from (x ∷ xs) ys (inj₂ y) = there (from xs ys (inj₂ y))
+
+-- Exercise All-++-≃ (stretch)
+-- Show that the equivalence All-++-⇔ can be extended to an isomorphism.
+
+-- Exercise ¬Any⇔All¬ (recommended)
+-- Show that Any and All satisfy a version of De Morgan’s Law:
+-- (¬_ ∘ Any P) xs ⇔ All (¬_ ∘ P) xs
+
+postulate
+  ¬Any⇔All¬ : ∀ {A : Set} {P : A → Set} (xs : List A) →
+    (¬_ ∘ Any P) xs ⇔ All (¬_ ∘ P) xs
+-- ¬Any⇔All¬ xs =
+--   record
+--     { to = to xs
+--     ; from = from xs
+--     }
+--   where
+--   to : ∀ {A : Set} {P : A → Set} (xs : List A) →
+--     (¬_ ∘ Any P) xs → All (¬_ ∘ P) xs
+--   to [] notAnyP = []
+--   to (x ∷ xs) notAnyP = {!   !} ∷ {!   !}
+--   from : ∀ {A : Set} {P : A → Set} (xs : List A) →
+--     All (¬_ ∘ P) xs → (¬_ ∘ Any P) xs 
+--   from [] notAllP = {!   !}
+--   from (x ∷ xs) notAllP = {!   !}
+
+-- (Can you see why it is important that here _∘_ is generalised to arbitrary levels, as described in the section on universe polymorphism?)
+
+-- Do we also have the following?
+
+-- (¬_ ∘ All P) xs ⇔ Any (¬_ ∘ P) xs
+-- If so, prove; if not, explain why.
+
+-- -- Your code goes here
+
+-- Exercise ¬Any≃All¬ (stretch)
+-- Show that the equivalence ¬Any⇔All¬ can be extended to an isomorphism.
+
+-- -- Your code goes here
+
+-- Exercise All-∀ (practice)
+-- Show that All P xs is isomorphic to ∀ x → x ∈ xs → P x.
+
+-- -- You code goes here
+-- Exercise Any-∃ (practice)
+-- Show that Any P xs is isomorphic to ∃[ x ] (x ∈ xs × P x).
+
+-- -- You code goes here
+
+-- Decidability of All
+
+all : ∀ {A : Set} → (A → Bool) → List A → Bool
+all p = foldr _∧_ true ∘ map p
+
+Decidable : ∀ {A : Set} → (A → Set) → Set
+Decidable {A} P  =  ∀ (x : A) → Dec (P x)
+
+All? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (All P)
+All? P? []                                 =  yes []
+All? P? (x ∷ xs) with P? x   | All? P? xs
+...                 | yes Px | yes Pxs     =  yes (Px ∷ Pxs)
+...                 | no ¬Px | _           =  no λ{ (Px ∷ Pxs) → ¬Px Px   }
+...                 | _      | no ¬Pxs     =  no λ{ (Px ∷ Pxs) → ¬Pxs Pxs }
+
+-- Exercise Any? (stretch)
+-- Just as All has analogues all and All? which determine whether a predicate holds for every element of a list, so does Any have analogues any and Any? which determine whether a predicate holds for some element of a list. Give their definitions.
+
+any : ∀ {A : Set} → (A → Bool) → List A → Bool
+any p = foldr _∨_ false ∘ map p
+
+Any? : ∀ {A : Set} {P : A → Set} → Decidable P → Decidable (Any P)
+Any? P? []                                 =  no (λ ())
+Any? P? (x ∷ xs) with P? x   | Any? P? xs
+...                 | yes Px | _           =  yes (here Px)
+...                 | no ¬Px | yes Pxs     =  yes (there Pxs)
+...                 | no ¬Px | no ¬Pxs     =  no (λ where 
+                                                         (here Px) → ¬Px Px 
+                                                         (there Pxs) → ¬Pxs Pxs)
