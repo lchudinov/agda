@@ -694,3 +694,51 @@ Any? P? (x ∷ xs) with P? x   | Any? P? xs
 ...                 | no ¬Px | no ¬Pxs     =  no (λ where 
                                                          (here Px) → ¬Px Px 
                                                          (there Pxs) → ¬Pxs Pxs)
+-- Exercise split (stretch)
+
+data merge {A : Set} : (xs ys zs : List A) → Set where
+  
+  [] :
+      ---------------
+      merge [] [] []
+      
+  left-∷ : ∀ {x xs ys zs}
+    → merge xs ys zs
+      ------------------------
+    → merge (x ∷ xs) ys (x ∷ zs)
+
+  right-∷ : ∀ {y xs ys zs}
+    → merge xs ys zs
+      ------------------------
+    → merge xs (y ∷ ys) (y ∷ zs)
+    
+_ : merge [ 1 , 4 ] [ 2 , 3 ] [ 1 , 2 , 3 , 4 ]
+_ = left-∷ (right-∷ (right-∷ (left-∷ [])))
+
+split : ∀ {A : Set} {P : A → Set} (P? : Decidable P) (zs : List A)
+  → ∃[ xs ] ∃[ ys ] ( merge xs ys zs × All P xs × All (¬_ ∘ P) ys )
+split P? = {!   !}
+
+-- Standard Library
+-- Definitions similar to those in this chapter can be found in the standard library:
+
+-- import Data.List using (List; _++_; length; reverse; map; foldr; downFrom)
+-- import Data.List.Relation.Unary.All using (All; []; _∷_)
+-- import Data.List.Relation.Unary.Any using (Any; here; there)
+-- import Data.List.Membership.Propositional using (_∈_)
+-- import Data.List.Properties
+--   using (reverse-++-commute; map-compose; map-++-commute; foldr-++; map-is-foldr)
+-- import Algebra.Structures using (IsMonoid)
+-- import Relation.Unary using (Decidable)
+-- import Relation.Binary using (Decidable)
+-- The standard library version of IsMonoid differs from the one given here, in that it is also parameterised on an equivalence relation.
+
+-- Both Relation.Unary and Relation.Binary define a version of Decidable, one for unary relations (as used in this chapter where P ranges over unary predicates) and one for binary relations (as used earlier, where _≤_ ranges over a binary relation).
+
+-- Unicode
+-- This chapter uses the following unicode:
+
+-- ∷  U+2237  PROPORTION  (\::)
+-- ⊗  U+2297  CIRCLED TIMES  (\otimes, \ox)
+-- ∈  U+2208  ELEMENT OF  (\in)
+-- ∉  U+2209  NOT AN ELEMENT OF  (\inn, \notin)
