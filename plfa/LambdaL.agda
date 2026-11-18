@@ -127,4 +127,53 @@ data Value : Term → Set where
   
 -- Substitution
 
+infix 9 _[_:=_]
 
+_[_:=_] : Term → Id → Term → Term
+(` x) [ y := V ] with x ≟ y -- \?=
+... | yes _ = V
+... | no _ = ` x
+(ƛ x ⇒ N) [ y := V ] with x ≟ y
+... | yes _ = ƛ x ⇒ N
+... | no _ = ƛ x ⇒ N [ y := V ]
+(L · M) [ y := V ] = L [ y := V ] · M [ y := V ]
+(`zero) [ y := V ] = `zero
+(`suc M) [ y := V ] = `suc M [ y := V ]
+(case L [zero⇒ M |suc x ⇒ N ]) [ y := V ] with x ≟ y
+... | yes _ = case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N ]
+... | no _ =  case L [ y := V ] [zero⇒ M [ y := V ] |suc x ⇒ N [ y := V ] ]
+(μ x ⇒ N) [ y := V ] with x ≟ y
+... | yes _         = μ x ⇒ N
+... | no  _         = μ x ⇒ N [ y := V ]
+
+--- Examples
+
+_ : (ƛ "z" ⇒ ` "s" · (` "s" · ` "z")) [ "s" := sucᶜ ]
+      ≡ ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")
+_ = refl
+
+_ : (sucᶜ · (sucᶜ · ` "z")) [ "z" := `zero ] ≡ sucᶜ · (sucᶜ · `zero)
+_ = refl
+
+_ : (ƛ "x" ⇒ ` "y") [ "y" := `zero ] ≡ ƛ "x" ⇒ `zero
+_ = refl
+
+_ : (ƛ "x" ⇒ ` "x") [ "x" := `zero ] ≡ ƛ "x" ⇒ ` "x"
+_ = refl
+
+_ : (ƛ "y" ⇒ ` "y") [ "x" := `zero ] ≡ ƛ "y" ⇒ ` "y"
+_ = refl
+
+-- Quiz
+
+-- What is the result of the following substitution?
+
+_ : (ƛ "y" ⇒ ` "x" · (ƛ "x" ⇒ ` "x")) [ "x" := `zero ] ≡ (ƛ "y" ⇒ `zero · (ƛ "x" ⇒ ` "x"))
+_ = refl
+
+-- Exercise _[_:=_]′ (stretch)
+-- The definition of substitution above has three clauses (ƛ, case, and μ) that invoke a with clause to deal with bound variables. Rewrite the definition to factor the common part of these three clauses into a single function, defined by mutual recursion with substitution.
+
+-- I skipped te Exercise
+
+--- Reduction
