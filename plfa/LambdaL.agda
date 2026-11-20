@@ -177,3 +177,50 @@ _ = refl
 -- I skipped te Exercise
 
 --- Reduction
+
+infix 4 _—→_ -- \ -->
+
+data _—→_ : Term → Term → Set where
+
+  ξ—·₁ : ∀ {L L′ M} -- \Gx \em \cdot
+    → L —→ L′
+      -----------
+    → L · M —→ L′ · M
+
+  ξ—·₂ : ∀ {V M M′}
+    → Value V
+    → M —→ M′
+      -----------
+    → V · M —→ V · M′
+  
+  β—ƛ : ∀ {x N V}
+    → Value V
+      ---------------------------
+    → (ƛ x ⇒ N) · V —→ N [ x := V ]
+    
+  ξ—suc : ∀ {M M′}
+    → M —→ M′
+      -----------
+    → `suc M —→ `suc M′
+
+  ξ-case : ∀ {x L L′ M N}
+    → L —→ L′
+      -----------------------------------------------------------------
+    → case L [zero⇒ M |suc x ⇒ N ] —→ case L′ [zero⇒ M |suc x ⇒ N ]
+    
+  β-zero : ∀ {x M N}
+      ----------------------------------------
+    → case `zero [zero⇒ M |suc x ⇒ N ] —→ M
+
+  β-suc : ∀ {x V M N}
+    → Value V
+      ---------------------------------------------------
+    → case `suc V [zero⇒ M |suc x ⇒ N ] —→ N [ x := V ]
+    
+  β-μ : ∀ {x M}
+      ------------------------------
+    → μ x ⇒ M —→ M [ x := μ x ⇒ M ]
+    
+-- Quiz
+
+-- _ : (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→ 
