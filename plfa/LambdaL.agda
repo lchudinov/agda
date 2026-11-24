@@ -223,4 +223,65 @@ data _—→_ : Term → Term → Set where
     
 -- Quiz
 
--- _ : (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→ 
+-- What does the following term step to?
+-- _ : (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→ (ƛ "x" ⇒ ` "x")
+
+-- What does the following term step to?
+
+-- _ : (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x") · (ƛ "x" ⇒ ` "x")  —→  (ƛ "x" ⇒ ` "x")
+
+-- What does the following term step to?
+
+-- _ : twoᶜ · sucᶜ · `zero  —→  sucᶜ · (sucᶜ · `zero)
+
+-- Reflexive and transitive closure
+
+infix 2 _—↠_ -- \em \rr-
+infix 1 begin_
+infix 2 —→⟨_⟩_
+infix 3 _∎
+
+data _—↠_ : Term → Term → Set where
+  _∎ : ∀ M
+    -----------
+    → M —↠ M
+  
+  step—→ : ∀ L {M N}
+    → M —↠ N
+    → L —→ M
+      -----------
+    → L —↠ N
+
+pattern _—→⟨_⟩_ L L—→M M—↠N = step—→ L M—↠N L—→M
+
+begin_ : ∀ {M N}
+  → M —↠ N
+    ------
+  → M —↠ N
+begin M—↠N = M—↠N
+
+data _—↠′_ : Term → Term → Set where
+
+  step′ : ∀ {M N}
+    → M —→ N
+      -------
+    → M —↠′ N
+
+  refl′ : ∀ {M}
+      -------
+    → M —↠′ M
+
+  trans′ : ∀ {L M N}
+    → L —↠′ M
+    → M —↠′ N
+      -------
+    → L —↠′ N
+
+-- Exercise —↠≲—↠′ (practice)
+-- Show that the first notion of reflexive and transitive closure above embeds into the second. Why are they not isomorphic?
+-- I skipped the exercise
+
+-- Confluence
+
+
+
