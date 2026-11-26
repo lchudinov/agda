@@ -182,23 +182,23 @@ infix 4 _—→_ -- \ -->
 
 data _—→_ : Term → Term → Set where
 
-  ξ—·₁ : ∀ {L L′ M} -- \Gx \em \cdot
+  ξ-·₁ : ∀ {L L′ M} -- \Gx \em \cdot
     → L —→ L′
       -----------
     → L · M —→ L′ · M
 
-  ξ—·₂ : ∀ {V M M′}
+  ξ-·₂ : ∀ {V M M′}
     → Value V
     → M —→ M′
       -----------
     → V · M —→ V · M′
   
-  β—ƛ : ∀ {x N V}
+  β-ƛ : ∀ {x N V}
     → Value V
       ---------------------------
     → (ƛ x ⇒ N) · V —→ N [ x := V ]
     
-  ξ—suc : ∀ {M M′}
+  ξ-suc : ∀ {M M′}
     → M —→ M′
       -----------
     → `suc M —→ `suc M′
@@ -236,10 +236,10 @@ data _—→_ : Term → Term → Set where
 
 -- Reflexive and transitive closure
 
-infix 2 _—↠_ -- \em \rr-
-infix 1 begin_
-infix 2 —→⟨_⟩_
-infix 3 _∎
+infix  2 _—↠_  -- \em \rr-
+infix  1 begin_
+infixr 2 _—→⟨_⟩_
+infix  3 _∎
 
 data _—↠_ : Term → Term → Set where
   _∎ : ∀ M
@@ -283,5 +283,38 @@ data _—↠′_ : Term → Term → Set where
 
 -- Confluence
 
+postulate
+  confluence : ∀ {L M N}
+    → ((L —↠ M) × (L —↠ N))
+      ----------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
 
+  diamond : ∀ {L M N}
+    → ((L —→ M) × (L —→ N))
+      --------------------
+    → ∃[ P ] ((M —↠ P) × (N —↠ P))
 
+postulate
+  deterministic : ∀ {L M N}
+    → L —→ M
+    → L —→ N
+      ------
+    → M ≡ N
+
+-- Examples 
+
+_ : twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
+_ =
+  begin
+    twoᶜ · sucᶜ · `zero
+  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩
+    ((ƛ "z" ⇒ sucᶜ · (sucᶜ · ` "z")) · `zero)
+  —→⟨ β-ƛ V-zero ⟩
+    (sucᶜ · (sucᶜ · `zero))
+  —→⟨ ξ-·₂ V-ƛ (β-ƛ V-zero) ⟩
+    (sucᶜ · `suc `zero)
+  —→⟨ β-ƛ (V-suc V-zero) ⟩
+    `suc (`suc `zero)
+  ∎
+
+-- Check the example above, firstly
